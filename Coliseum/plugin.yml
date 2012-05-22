@@ -1,0 +1,9 @@
+name: PermGUI
+main: org.SkyCraft.Coliseum.ColiseumPlugin
+version: 0.1
+author: Braaedy aka kuzi117
+commands:
+    coliseum:
+        aliases: col
+        description: Gives access to coliseum commands.
+        usage: coliseum
