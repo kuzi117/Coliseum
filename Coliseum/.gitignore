@@ -1,0 +1,6 @@
+desc.jardesc
+build.jardesc
+resource.jardesc
+/target
+/.settings
+/bin
