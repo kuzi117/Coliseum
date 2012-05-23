@@ -20,6 +20,7 @@ public class ColiseumPlugin extends JavaPlugin {
 	}
 	
 	public Set<Arena> getArenaSet() {
+		log.info("poop");
 		return arenaSet;
 	}
 	
