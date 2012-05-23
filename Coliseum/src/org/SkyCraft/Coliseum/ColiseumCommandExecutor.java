@@ -12,10 +12,10 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class ColiseumCommandExecutor implements CommandExecutor {
-	
+
 	private ColiseumPlugin plugin;
 	private Logger log;
-	
+
 	ColiseumCommandExecutor(ColiseumPlugin plugin, Logger log) {
 		this.plugin = plugin;
 		this.log = log;
@@ -26,7 +26,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			sender.sendMessage("[Colisuem] Coliseum can only be used in-game.");
 			return true;
 		}
-		
+
 		else {
 			String argument = args[0];
 			if(argument.equalsIgnoreCase("posone") && args.length >= 2) {
@@ -37,15 +37,28 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if (a.isThisArena(args[1])) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
+						//teleport players in.
 					}
 					else {
 						((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
 					}
-				}//TODO implement removing player.
+				}
+			}
+			else if (argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {
+				for(Arena a : plugin.getArenaSet()) {
+					if (a.hasThisPlayer(((Player) sender))) {
+						a.removePlayer(((Player) sender));
+						plugin.leavePlayer(((Player) sender).getName());
+						//teleport players away.
+					}
+					else {
+						((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
+					}
+				}
 			}
 			//TODO implement other commands (postwo etc, enable, etc)
 			return true;
 		}
-	}
 
+	}
 }

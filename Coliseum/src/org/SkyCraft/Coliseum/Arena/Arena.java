@@ -43,4 +43,8 @@ public class Arena {
 		
 	}
 	
+	public void removePlayer(Player player) {
+		//TODO REMOVE COMBATANT
+	}
+	
 }
