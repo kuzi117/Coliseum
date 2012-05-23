@@ -32,17 +32,16 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			if(argument.equalsIgnoreCase("posone") && args.length >= 2) {
 				//TODO implement setting positions of individual corners of regions(arenas)
 			}
-			
-			else if (argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName())) {
+			else if (argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
 				for(Arena a : plugin.getArenaSet()) {
 					if (a.isThisArena(args[1])) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
-					}//TODO implement removing player.
+					}
 					else {
 						((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
 					}
-				}
+				}//TODO implement removing player.
 			}
 			//TODO implement other commands (postwo etc, enable, etc)
 			return true;
