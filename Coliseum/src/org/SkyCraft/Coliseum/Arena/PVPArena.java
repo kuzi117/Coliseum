@@ -3,21 +3,29 @@ package org.SkyCraft.Coliseum.Arena;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
+import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
+import org.SkyCraft.Coliseum.Arena.Region.Region;
+import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
 import org.bukkit.entity.Player;
 
 public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
-	private PVPRegion arenaPVPRegion;
+	private PVPRegion arenaRegion;
+	private WaitingRegion waitingRegion;
 
 	PVPArena(String arenaName) {
 		super(arenaName);
-		arenaPVPRegion = new PVPRegion();
+		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
 	}
 
 	public Region getRegion() {
-		// TODO Auto-generated method stub
-		return arenaPVPRegion;
+		return arenaRegion;
+	}
+	
+	public Region getWaitingRegion() {
+		return arenaRegion;
 	}
 
 	public boolean hasThisPlayer(Player player) {
@@ -30,12 +38,22 @@ public class PVPArena extends Arena {
 	}
 
 	public void addPlayer(Player player) {
-		super.addPlayer(player);
-		
+		PVPCombatant combatant = new PVPCombatant(player);
+		combatants.add(combatant);
+		combatant.toWaitingArea(waitingRegion);
 	}
 
 	public void removePlayer(Player player) {
-		super.removePlayer(player);
+		//TODO removeplayer init
+	}
+	
+	public void addTeamName(String name) {
+		
+	}
+
+	public void start() {
+		//MUST CHECK IF ALL PLAYERS HAVE TEAMS
+		//MUST CHECK IF ALL TEAMS HAVE SPAWNS
 		
 	}
 
