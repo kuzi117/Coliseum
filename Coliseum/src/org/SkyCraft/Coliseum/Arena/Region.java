@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
-public class Region {
+public abstract class Region {
 
 	Vector pos1;
 	Vector pos2;

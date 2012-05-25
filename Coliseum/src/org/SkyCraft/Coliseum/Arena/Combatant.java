@@ -2,7 +2,7 @@ package org.SkyCraft.Coliseum.Arena;
 
 import org.bukkit.entity.Player;
 
-public class Combatant {
+public abstract class Combatant {
 
 	private Player player;
 	

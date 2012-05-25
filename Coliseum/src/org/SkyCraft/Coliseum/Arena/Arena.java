@@ -1,25 +1,16 @@
 package org.SkyCraft.Coliseum.Arena;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.entity.Player;
 
-public class Arena {
+public abstract class Arena {
 	private String arenaName;
-	private Region arenaRegion;
-	private Set<Combatant> combatants;
 	//TODO Implement players list/array/something
 	
 	Arena(String arenaName) {
 		this.arenaName = arenaName;
-		arenaRegion = new Region();
-		combatants = new HashSet<Combatant>();
 	}
 	
-	public Region getRegion() {
-		return arenaRegion;
-	}
+	public abstract Region getRegion();
 	
 	public boolean isThisArena(String name) {
 		if(arenaName.equalsIgnoreCase(name)) {
@@ -28,14 +19,7 @@ public class Arena {
 		return false;
 	}
 	
-	public boolean hasThisPlayer(Player player) {
-		for(Combatant combatant : combatants) {
-			if (combatant.getPlayer().equals(player)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	public abstract boolean hasThisPlayer(Player player);
 	
 
 	public void addPlayer(Player player) {
