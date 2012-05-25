@@ -41,6 +41,14 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}//TODO Check if block is null, do later in interest of getting this done.
 				}
 			}
+			else if(argument.equalsIgnoreCase("postwo") && args.length >= 2) {
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isThisArena(args[1])) {
+						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						return true;
+					}//TODO Check if block is null, do later in interest of getting this done.
+				}
+			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(args[1])) {
