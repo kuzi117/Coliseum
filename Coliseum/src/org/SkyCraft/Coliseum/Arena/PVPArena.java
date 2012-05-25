@@ -59,6 +59,7 @@ public class PVPArena extends Arena {
 	public void start() {
 		//MUST CHECK IF ALL PLAYERS HAVE TEAMS
 		//MUST CHECK IF ALL TEAMS HAVE SPAWNS
+		//MUST CHECK NO ONE IS EDITING
 		
 	}
 
