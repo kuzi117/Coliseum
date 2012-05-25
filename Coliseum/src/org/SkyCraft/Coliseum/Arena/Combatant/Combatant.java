@@ -23,4 +23,9 @@ public abstract class Combatant {
 		player.teleport(waitingRegion.getSpawn(), TeleportCause.PLUGIN);
 		return;
 	}
+	
+	public void returnToLoc() {
+		player.teleport(prevLoc, TeleportCause.PLUGIN);
+		return;
+	}
 }
