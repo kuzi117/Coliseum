@@ -33,31 +33,50 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			}
 			
 			String argument = args[0];
-			if(argument.equalsIgnoreCase("posone") && args.length >= 2) {
+			if(argument.equalsIgnoreCase("edit") && args.length >= 2) {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(args[1])) {
+						a.setPlayerEditing((Player) sender);
+						return true;
+					}
+				}
+				sender.sendMessage(ChatColor.GRAY + "No arena was found by that name.");
+				return true;
+			}
+			else if(argument.equalsIgnoreCase("posone")) {
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
 						return true;
-					}//TODO Check if block is null, do later in interest of getting this done.
+					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
-			else if(argument.equalsIgnoreCase("postwo") && args.length >= 2) {
+			else if(argument.equalsIgnoreCase("postwo")) {
 				for(Arena a : plugin.getArenaSet()) {
-					if(a.isThisArena(args[1])) {
+					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
 						return true;
-					}//TODO Check if block is null, do later in interest of getting this done.
+					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
+			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {
+				//TODO (got sidetracked implementing editor.)
+			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						sender.sendMessage(ChatColor.GRAY + "You're still editing something. Quit editing and try to join again.");
+						return true;
+					}
+				}
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(args[1])) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
+						return true;
 					}
-					else {
-						((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
-					}
+					((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
+					return true;
 				}
 			}
 			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {
@@ -65,10 +84,10 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
 						plugin.leavePlayer(((Player) sender).getName());
+						return true;
 					}
-					else {
-						((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
-					}
+					((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
+					return true;
 				}
 			}
 			//TODO implement other commands (postwo etc, enable, etc)
