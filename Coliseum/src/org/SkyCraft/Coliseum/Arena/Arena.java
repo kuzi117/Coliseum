@@ -29,6 +29,11 @@ public abstract class Arena {
 		}
 		return false;
 	}
+
+	public void setPlayerEditing(Player editor) {
+		editors.add(editor);
+		return;
+	}
 	
 	public abstract boolean hasThisPlayer(Player player);
 
@@ -37,10 +42,5 @@ public abstract class Arena {
 	public abstract void removePlayer(Player player);
 	
 	public abstract void start();
-
-	public void setPlayerEditing(Player editor) {
-		editors.add(editor);
-		return;
-	}
 	
 }
