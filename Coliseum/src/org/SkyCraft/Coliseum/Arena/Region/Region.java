@@ -1,4 +1,4 @@
-package org.SkyCraft.Coliseum.Arena;
+package org.SkyCraft.Coliseum.Arena.Region;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -6,34 +6,20 @@ import org.bukkit.util.Vector;
 
 public abstract class Region {
 
-	Vector pos1;
-	Vector pos2;
+	private Vector pos1;
+	private Vector pos2;
 	
 	//TODO implement checks to ensure no "flat" regions
-	
+
 	Region() {}
 	
-	Region(Vector impPos, int posNum) {
-		if (posNum == 1) {
-			pos1 = impPos;
-		}
-		else if (posNum == 2) {
-			pos2 = impPos;
-		}
-	}
-	
-	Region(Vector impPos1, Vector impPos2) {
-			pos1 = impPos1;
-			pos2 = impPos2;
-	}
-	
-	void setPos1(Block block) {
+	public void setPos1(Block block) {
 		pos1.setX(block.getX());
 		pos1.setY(block.getY());
 		pos1.setZ(block.getZ());
 	}
 
-	void setPos1(int x, int y, int z) {
+	public void setPos1(int x, int y, int z) {
 		pos1.setX(x);
 		pos1.setY(y);
 		pos1.setZ(z);
