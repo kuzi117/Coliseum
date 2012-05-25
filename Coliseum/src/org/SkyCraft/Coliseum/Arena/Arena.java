@@ -1,5 +1,6 @@
 package org.SkyCraft.Coliseum.Arena;
 
+import org.SkyCraft.Coliseum.Arena.Region.Region;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
@@ -20,15 +21,11 @@ public abstract class Arena {
 	}
 	
 	public abstract boolean hasThisPlayer(Player player);
-	
 
-	public void addPlayer(Player player) {
-		//combatants.add(player.getName());  TODO ADD COMBATANT INIT
-		
-	}
+	public abstract void addPlayer(Player player);
 	
-	public void removePlayer(Player player) {
-		//TODO REMOVE COMBATANT
-	}
+	public abstract void removePlayer(Player player);
+	
+	public abstract void start();
 	
 }
