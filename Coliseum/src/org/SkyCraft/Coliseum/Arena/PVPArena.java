@@ -44,7 +44,12 @@ public class PVPArena extends Arena {
 	}
 
 	public void removePlayer(Player player) {
-		//TODO removeplayer init
+		for(PVPCombatant combatant: combatants) {
+			if(combatant.getPlayer().equals(player)) {
+				combatants.remove(combatant);
+				combatant.returnToLoc();
+			}
+		}
 	}
 	
 	public void addTeamName(String name) {

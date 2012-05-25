@@ -57,7 +57,6 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
 						plugin.leavePlayer(((Player) sender).getName());
-						//teleport players away.
 					}
 					else {
 						((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
