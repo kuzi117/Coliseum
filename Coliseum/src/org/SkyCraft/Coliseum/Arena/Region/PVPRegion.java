@@ -1,11 +1,7 @@
 package org.SkyCraft.Coliseum.Arena.Region;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
 public class PVPRegion extends Region {
 
@@ -26,5 +22,11 @@ public class PVPRegion extends Region {
 	
 	public Location getTeamSpawn(String name) {
 		return teamSpawns.get(name);
+	}
+	
+	public boolean isCompleteRegion() {
+		if(teamSpawns.size() < 2)
+			return false;
+		return super.isCompleteRegion();
 	}
 }
