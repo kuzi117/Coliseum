@@ -4,3 +4,5 @@ resource.jardesc
 /target
 /.settings
 /bin
+.project
+.classpath
