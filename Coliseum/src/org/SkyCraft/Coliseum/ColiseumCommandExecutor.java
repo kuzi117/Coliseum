@@ -28,25 +28,33 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 		}
 
 		else {
+			if(args.length == 0) {
+				sender.sendMessage("[Colisuem] You need to add arguments to do anything useful.");
+			}
+			
 			String argument = args[0];
 			if(argument.equalsIgnoreCase("posone") && args.length >= 2) {
-				//TODO implement setting positions of individual corners of regions(arenas)
-			}
-			else if (argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
 				for(Arena a : plugin.getArenaSet()) {
-					if (a.isThisArena(args[1])) {
+					if(a.isThisArena(args[1])) {
+						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						return true;
+					}//TODO Check if block is null, do later in interest of getting this done.
+				}
+			}
+			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isThisArena(args[1])) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
-						//teleport players in.
 					}
 					else {
 						((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
 					}
 				}
 			}
-			else if (argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {
+			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {
 				for(Arena a : plugin.getArenaSet()) {
-					if (a.hasThisPlayer(((Player) sender))) {
+					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
 						plugin.leavePlayer(((Player) sender).getName());
 						//teleport players away.
