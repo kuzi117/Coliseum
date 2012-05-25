@@ -25,23 +25,22 @@ public abstract class Region {
 		pos1.setZ(z);
 	}
 	
-	void setPos2(Block block) {
+	public void setPos2(Block block) {
 		pos2.setX(block.getX());
 		pos2.setY(block.getY());
 		pos2.setZ(block.getZ());
 	}
 	
-	void setPos2(int x, int y, int z) {
+	public void setPos2(int x, int y, int z) {
 		pos2.setX(x);
 		pos2.setY(y);
 		pos2.setZ(z);
 	}
 	
-	boolean isCompleteRegion() {
-		if (pos1 != null && pos2 != null) {
-			return true;
-		}
-		return false;
+	protected boolean isCompleteRegion() {
+		if(pos1 == null || pos2 == null)
+			return false;
+		return true;
 	}
 	
 	public boolean isBlockContained(Location loc) {
@@ -55,7 +54,7 @@ public abstract class Region {
 	}
 
 	private boolean isBetween(int c1, int c2, int cB) {
-		if (c1 > c2) {
+		if(c1 > c2) {
 			if(cB < c1 && cB > c2) {
 				return true;
 			}
