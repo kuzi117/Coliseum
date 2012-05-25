@@ -17,5 +17,9 @@ public class ConfigHandler {
 		    this.config = plugin.getConfig();
 		}
 	}
+	
+	void loadSomething()  {
+		
+	}
 
 }
