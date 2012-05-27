@@ -31,6 +31,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 		else {
 			if(args.length == 0) {
 				sender.sendMessage("[Colisuem] You need to add arguments to do anything useful.");
+				return true;
 			}
 			
 			String argument = args[0];
@@ -46,7 +47,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						sb.append(args[i] + " ");
 					}
 					plugin.getArenaSet().add(new PVPArena(sb.toString()));
-					sender.sendMessage("[Colisuem] Created a new arena called " + sb.toString() + ".");
+					sender.sendMessage("[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
 					return true;
 				}
 				else {
@@ -82,7 +83,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You need to supply an arena to begin editing or you were not editing anything to be removed from.");
-					
+					return true;
 				}
 			}
 			else if(argument.equalsIgnoreCase("posone")) {//TODO editor permissions
@@ -102,7 +103,33 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 			}
 			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {//TODO editor permissions
-				//TODO (got sidetracked implementing editor.)
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						if(a instanceof PVPArena) {
+							StringBuilder sb = new StringBuilder();
+							for(int i = 1; i <= (args.length - 1); i++) {
+								if(i == args.length) {
+									sb.append(args[i]);
+									break;
+								}
+								sb.append(args[i] + " ");
+							}
+							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait")) {
+								((PVPArena) a).getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation());
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set!");
+								return true;
+							}
+							else if(((PVPArena) a).getTeams().containsKey(sb.toString())) {//TODO if containsKey is case sensitive need new way to match arena names
+								((PVPArena) a).getRegion().addTeamSpawn(args[1], ((Player) sender).getTargetBlock(null, 10).getLocation());
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created!");
+								return true;
+							}
+							else {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No spawn with that name was found. No spawn was set.");
+							}
+						}
+					}
+				}
 			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
@@ -111,14 +138,24 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
+				
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				
 				for(Arena a : plugin.getArenaSet()) {
-					if(a.isThisArena(args[1])) {
+					if(a.isThisArena(sb.toString())) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
 						return true;
 					}
-					((Player) sender).sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 					return true;
 				}
 			}
@@ -129,13 +166,22 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						plugin.leavePlayer(((Player) sender).getName());
 						return true;
 					}
-					((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) permissions
+			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				
 				for(Arena a: plugin.getArenaSet()) {
-					if(a.isThisArena(args[1])) {
+					if(a.isThisArena(sb.toString())) {
 						if(a.enable()) {
 							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
 							return true;
@@ -144,9 +190,11 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
-				((Player) sender).sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+				return true;
 			}
-			//TODO implement other commands (kick, enable, disable, )
+			//TODO implement other commands (kick, disable, forcestart, createteam)
+			//TODO implement a "help" message.
 			return true;
 		}
 
