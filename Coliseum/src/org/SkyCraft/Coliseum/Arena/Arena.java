@@ -54,6 +54,9 @@ public abstract class Arena {
 	}
 	
 	public boolean enable() {
+		if(!waitingRegion.isCompleteRegion()) {
+			return false;
+		}
 		if(!editors.isEmpty()) {
 			for(Player p : editors) {
 				p.sendMessage(ChatColor.GRAY + "[Coliseum] The arena you were editing has been enabled. You are no longer editing an arena.");
