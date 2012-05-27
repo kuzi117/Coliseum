@@ -14,7 +14,7 @@ public class PVPArena extends Arena {
 	private PVPRegion arenaRegion;
 	private WaitingRegion waitingRegion;
 
-	PVPArena(String arenaName) {
+	public PVPArena(String arenaName) {
 		super(arenaName);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
