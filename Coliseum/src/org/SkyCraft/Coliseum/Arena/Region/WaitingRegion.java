@@ -6,7 +6,7 @@ public class WaitingRegion extends Region {
 
 	private Location waitingSpawn;
 	
-	WaitingRegion() {}
+	public WaitingRegion() {}
 
 	public boolean setSpawn(Location waitingSpawn) {
 		if(isBlockContained(waitingSpawn)) {
