@@ -3,13 +3,13 @@ package org.SkyCraft.Coliseum.Arena;
 import java.util.Set;
 
 import org.SkyCraft.Coliseum.Arena.Region.Region;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
 	private String arenaName;
 	protected Set<Player> editors;
 	private boolean enabled;
-	//TODO Implement players list/array/something
 	
 	Arena(String arenaName) {
 		this.arenaName = arenaName;
@@ -33,13 +33,25 @@ public abstract class Arena {
 	}
 
 	public void setPlayerEditing(Player editor) {
+		if(enabled) {
+			editor.sendMessage(ChatColor.GRAY + "[Coliseum] The arena you chose was enabled; you could not be placed in editing mode.");
+			return;
+		}
 		editors.add(editor);
+		return;
+	}
+
+	public void removeEditor(Player editor) {
+		editors.remove(editor);
 		return;
 	}
 	
 	public boolean enable() {
 		if(!editors.isEmpty()) {
-			return false;
+			for(Player p : editors) {
+				p.sendMessage(ChatColor.GRAY + "[Coliseum] The arena you were editing has been enabled. You are no longer editing an arena.");
+			}
+			editors.clear();
 		}
 		return enabled = true;
 	}
