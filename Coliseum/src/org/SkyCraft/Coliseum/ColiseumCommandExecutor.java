@@ -3,6 +3,7 @@ package org.SkyCraft.Coliseum;
 import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
+import org.SkyCraft.Coliseum.Arena.PVPArena;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,17 +34,38 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			}
 			
 			String argument = args[0];
-			if(argument.equalsIgnoreCase("edit") && args.length >= 2) {
+			
+			if(argument.equalsIgnoreCase("create") && args.length >= 3) {//TODO editor permissions
+				if(args[1].equalsIgnoreCase("pvp")) {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 2; i <= (args.length - 1); i++) {
+						if(i == args.length) {
+							sb.append(args[i]);
+							break;
+						}
+						sb.append(args[i] + " ");
+					}
+					plugin.getArenaSet().add(new PVPArena(sb.toString()));
+					sender.sendMessage("[Colisuem] Created arena called " + sb.toString() + ".");
+					return true;
+				}
+				else {
+					sender.sendMessage("[Colisuem] Not a recognized arena type.");
+					return true;
+				}
+			}
+			else if(argument.equalsIgnoreCase("edit") && args.length >= 2) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(args[1])) {
-						a.setPlayerEditing((Player) sender);
+						a.setPlayerEditing((Player) sender);//TODO disable
+						sender.sendMessage("[Colisuem] Now editing " + a.getName() + ".");
 						return true;
 					}
 				}
-				sender.sendMessage(ChatColor.GRAY + "No arena was found by that name.");
+				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 				return true;
 			}
-			else if(argument.equalsIgnoreCase("posone")) {
+			else if(argument.equalsIgnoreCase("posone")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
@@ -51,7 +73,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
-			else if(argument.equalsIgnoreCase("postwo")) {
+			else if(argument.equalsIgnoreCase("postwo")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
@@ -59,13 +81,13 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
-			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {
+			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {//TODO editor permissions
 				//TODO (got sidetracked implementing editor.)
 			}
-			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {
+			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						sender.sendMessage(ChatColor.GRAY + "You're still editing something. Quit editing and try to join again.");
+						sender.sendMessage(ChatColor.GRAY + "[Colisuem] You're still editing something. Quit editing and try to join again.");
 						return true;
 					}
 				}
@@ -79,7 +101,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {
+			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
@@ -90,7 +112,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			//TODO implement other commands (postwo etc, enable, etc)
+			//TODO implement other commands (kick, enable, disable, )
 			return true;
 		}
 
