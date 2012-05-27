@@ -1,22 +1,25 @@
 package org.SkyCraft.Coliseum.Arena;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.SkyCraft.Coliseum.Arena.Region.Region;
+import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
-	private String arenaName;
 	protected Set<Player> editors;
+	protected WaitingRegion waitingRegion;
+	private String arenaName;
 	private boolean enabled;
 	
 	Arena(String arenaName) {
+		editors = new HashSet<Player>();
+		waitingRegion = new WaitingRegion();
 		this.arenaName = arenaName;
 		enabled = false;
 	}
-	
-	public abstract Region getRegion();
 	
 	public boolean isThisArena(String name) {
 		if(arenaName.equalsIgnoreCase(name)) {
@@ -46,6 +49,10 @@ public abstract class Arena {
 		return;
 	}
 	
+	public WaitingRegion getWaitingRegion() {
+		return waitingRegion;
+	}
+	
 	public boolean enable() {
 		if(!editors.isEmpty()) {
 			for(Player p : editors) {
@@ -69,6 +76,8 @@ public abstract class Arena {
 	public abstract void addPlayer(Player player);
 	
 	public abstract void removePlayer(Player player);
+	
+	public abstract Region getRegion();
 	
 	public abstract void start();
 	
