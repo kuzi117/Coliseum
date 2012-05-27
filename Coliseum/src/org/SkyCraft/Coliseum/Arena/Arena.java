@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public abstract class Arena {
 	private String arenaName;
-	private Set<Player> editors;
+	protected Set<Player> editors;
 	private boolean enabled;
 	//TODO Implement players list/array/something
 	
@@ -37,13 +37,19 @@ public abstract class Arena {
 		return;
 	}
 	
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		return;
+	public boolean enable() {
+		if(!editors.isEmpty()) {
+			return false;
+		}
+		return enabled = true;
 	}
 	
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	public String getName() {
+		return arenaName;
 	}
 	
 	public abstract boolean hasThisPlayer(Player player);
@@ -53,9 +59,5 @@ public abstract class Arena {
 	public abstract void removePlayer(Player player);
 	
 	public abstract void start();
-
-	public String getName() {
-		return arenaName;
-	}
 	
 }
