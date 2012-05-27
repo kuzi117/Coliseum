@@ -24,9 +24,10 @@ public class PVPRegion extends Region {
 		return teamSpawns.get(name);
 	}
 	
-	public boolean isCompleteRegion() {
-		if(teamSpawns.size() < 2)
+	public boolean isCompleteRegion(int teamSize) {
+		if(teamSpawns.size() != teamSize) {
 			return false;
+		}
 		return super.isCompleteRegion();
 	}
 }

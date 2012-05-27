@@ -1,5 +1,6 @@
 package org.SkyCraft.Coliseum.Arena;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
 	private PVPRegion arenaRegion;
 	private WaitingRegion waitingRegion;
+	private HashMap<String, Integer> teams;
 
 	public PVPArena(String arenaName) {
 		super(arenaName);
@@ -51,9 +53,17 @@ public class PVPArena extends Arena {
 			}
 		}
 	}
+
+	public boolean enable() {
+		if(!arenaRegion.isCompleteRegion(teams.size()) || !waitingRegion.isCompleteRegion()) {
+			return false;
+		}
+		return super.enable();
+	}
 	
 	public void addTeamName(String name) {
-		
+		teams.put(name, 0);
+		return;
 	}
 
 	public void start() {
