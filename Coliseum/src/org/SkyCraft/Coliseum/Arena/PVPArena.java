@@ -17,6 +17,7 @@ public class PVPArena extends Arena {
 		super(arenaName);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
+		teams = new HashMap<String, Integer>();
 	}
 
 	public PVPRegion getRegion() {
@@ -52,7 +53,7 @@ public class PVPArena extends Arena {
 	}
 
 	public boolean enable() {
-		if(!arenaRegion.isCompleteRegion(teams.size()) || !waitingRegion.isCompleteRegion()) {
+		if(!arenaRegion.isCompleteRegion(teams.size())) {
 			return false;
 		}
 		return super.enable();
