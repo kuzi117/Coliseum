@@ -96,7 +96,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("posone")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("posone") || argument.equalsIgnoreCase("po") || argument.equalsIgnoreCase("p1")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
@@ -104,7 +104,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
-			else if(argument.equalsIgnoreCase("wposone")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("wposone") || argument.equalsIgnoreCase("wpo") || argument.equalsIgnoreCase("wp1")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
@@ -112,10 +112,18 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
 			}
-			else if(argument.equalsIgnoreCase("postwo")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("postwo") || argument.equalsIgnoreCase("pt") || argument.equalsIgnoreCase("p2")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						return true;
+					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+				}
+			}
+			else if(argument.equalsIgnoreCase("wpostwo") || argument.equalsIgnoreCase("wpt") || argument.equalsIgnoreCase("wp2")) {//TODO editor permissions
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -132,7 +140,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								}
 								sb.append(args[i] + " ");
 							}
-							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait")) {
+							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
 								((PVPArena) a).getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation());
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set!");
 								return true;
@@ -211,7 +219,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 				return true;
 			}
-			//TODO implement other commands (kick, disable, forcestart, createteam)
+			//TODO implement other commands (kick, forcestart, createteam)
 			//TODO implement a "help" message.
 			return true;
 		}
