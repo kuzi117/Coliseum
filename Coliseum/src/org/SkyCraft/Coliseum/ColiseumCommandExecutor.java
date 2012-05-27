@@ -46,8 +46,18 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 						sb.append(args[i] + " ");
 					}
-					plugin.getArenaSet().add(new PVPArena(sb.toString()));
+					PVPArena a = new PVPArena(sb.toString());
+					plugin.getArenaSet().add(a);
 					sender.sendMessage("[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
+					for(Arena a2 : plugin.getArenaSet()) {
+						if(a2.isPlayerEditing((Player) sender)) {
+							a2.removeEditor((Player) sender);
+							sender.sendMessage(ChatColor.GRAY + "You are no longer editing " + a.getName() + ".");
+							break;
+						}
+					}
+					a.setPlayerEditing((Player) sender);
+					sender.sendMessage("[Colisuem] Now editing " + sb.toString() + ".");
 					return true;
 				}
 				else {
@@ -90,6 +100,14 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						return true;
+					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+				}
+			}
+			else if(argument.equalsIgnoreCase("wposone")) {//TODO editor permissions
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
