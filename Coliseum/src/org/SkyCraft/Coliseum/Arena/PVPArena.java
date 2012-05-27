@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
 import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
-import org.SkyCraft.Coliseum.Arena.Region.Region;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
 import org.bukkit.entity.Player;
 
@@ -22,12 +21,12 @@ public class PVPArena extends Arena {
 		combatants = new HashSet<PVPCombatant>();
 	}
 
-	public Region getRegion() {
+	public PVPRegion getRegion() {
 		return arenaRegion;
 	}
 	
-	public Region getWaitingRegion() {
-		return arenaRegion;
+	public WaitingRegion getWaitingRegion() {
+		return waitingRegion;
 	}
 
 	public boolean hasThisPlayer(Player player) {
@@ -53,6 +52,10 @@ public class PVPArena extends Arena {
 			}
 		}
 	}
+	
+	public HashMap<String, Integer> getTeams() {
+		return teams;
+	}
 
 	public boolean enable() {
 		if(!arenaRegion.isCompleteRegion(teams.size()) || !waitingRegion.isCompleteRegion()) {
@@ -72,5 +75,4 @@ public class PVPArena extends Arena {
 		//MUST CHECK NO ONE IS EDITING
 		
 	}
-
 }
