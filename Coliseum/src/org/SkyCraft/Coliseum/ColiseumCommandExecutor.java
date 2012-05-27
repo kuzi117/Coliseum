@@ -30,7 +30,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 
 		else {
 			if(args.length == 0) {
-				sender.sendMessage("[Colisuem] You need to add arguments to do anything useful.");
+				sender.sendMessage(ChatColor.GRAY + "[Colisuem] You need to add arguments to do anything useful.");
 				return true;
 			}
 			
@@ -40,7 +40,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				if(args[1].equalsIgnoreCase("pvp")) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 2; i <= (args.length - 1); i++) {
-						if(i == args.length) {
+						if(i + 1 == args.length) {
 							sb.append(args[i]);
 							break;
 						}
@@ -48,7 +48,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 					PVPArena a = new PVPArena(sb.toString());
 					plugin.getArenaSet().add(a);
-					sender.sendMessage("[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
+					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
 					for(Arena a2 : plugin.getArenaSet()) {
 						if(a2.isPlayerEditing((Player) sender)) {
 							a2.removeEditor((Player) sender);
@@ -57,11 +57,11 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 					a.setPlayerEditing((Player) sender);
-					sender.sendMessage("[Colisuem] Now editing " + sb.toString() + ".");
+					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
 					return true;
 				}
 				else {
-					sender.sendMessage("[Colisuem] Not a recognized arena type.");
+					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Not a recognized arena type.");
 					return true;
 				}
 			}
@@ -77,7 +77,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								}
 							}
 							a.setPlayerEditing((Player) sender);
-							sender.sendMessage("[Colisuem] Now editing " + a.getName() + ".");
+							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + a.getName() + ".");
 							return true;
 						}
 					}
@@ -100,6 +100,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						sender.sendMessage(ChatColor.GRAY + "Position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -108,6 +109,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						sender.sendMessage(ChatColor.GRAY + "Waiting position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -116,6 +118,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						sender.sendMessage(ChatColor.GRAY + "Position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -124,6 +127,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						sender.sendMessage(ChatColor.GRAY + "Waiting position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -134,7 +138,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						if(a instanceof PVPArena) {
 							StringBuilder sb = new StringBuilder();
 							for(int i = 1; i <= (args.length - 1); i++) {
-								if(i == args.length) {
+								if(i + 1 == args.length) {
 									sb.append(args[i]);
 									break;
 								}
@@ -167,7 +171,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				
 				StringBuilder sb = new StringBuilder();
 				for(int i = 1; i <= (args.length - 1); i++) {
-					if(i == args.length) {
+					if(i + 1 == args.length) {
 						sb.append(args[i]);
 						break;
 					}
@@ -190,6 +194,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
 						plugin.leavePlayer(((Player) sender).getName());
+						sender.sendMessage(ChatColor.GRAY + "Arena left.");
 						return true;
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
@@ -199,7 +204,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
 				StringBuilder sb = new StringBuilder();
 				for(int i = 1; i <= (args.length - 1); i++) {
-					if(i == args.length) {
+					if(i + 1 == args.length) {
 						sb.append(args[i]);
 						break;
 					}
