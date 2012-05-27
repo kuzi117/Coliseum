@@ -14,6 +14,7 @@ public class ColiseumPlugin extends JavaPlugin {
 	private Set<Arena> arenaSet = new HashSet<Arena>();
 	private Set<String> playerAlreadyJoined = new HashSet<String>();
 	//private ConfigHandler confHandler;
+	//TODO Need logout listener to remove and move player on logout
 	
 	
 	public void onEnable() {
