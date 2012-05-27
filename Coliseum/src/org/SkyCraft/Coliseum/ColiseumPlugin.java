@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ColiseumPlugin extends JavaPlugin {
 
 	private ColiseumCommandExecutor executor;
-	private Logger log = getLogger();
+	private Logger log = Logger.getLogger("Minecraft");
 	private Set<Arena> arenaSet = new HashSet<Arena>();
 	private Set<String> playerAlreadyJoined = new HashSet<String>();
 	//private ConfigHandler confHandler;
