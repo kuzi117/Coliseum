@@ -46,7 +46,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						sb.append(args[i] + " ");
 					}
 					plugin.getArenaSet().add(new PVPArena(sb.toString()));
-					sender.sendMessage("[Colisuem] Created arena called " + sb.toString() + ".");
+					sender.sendMessage("[Colisuem] Created a new arena called " + sb.toString() + ".");
 					return true;
 				}
 				else {
@@ -54,16 +54,36 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("edit") && args.length >= 2) {//TODO editor permissions
-				for(Arena a : plugin.getArenaSet()) {
-					if(a.isThisArena(args[1])) {
-						a.setPlayerEditing((Player) sender);//TODO disable
-						sender.sendMessage("[Colisuem] Now editing " + a.getName() + ".");
-						return true;
+			else if(argument.equalsIgnoreCase("edit")) {//TODO editor permissions
+				if(args.length >=2) {
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.isThisArena(args[1])) {
+							for(Arena a2 : plugin.getArenaSet()) {
+								if(a2.isPlayerEditing((Player) sender)) {
+									a2.removeEditor((Player) sender);
+									sender.sendMessage(ChatColor.GRAY + "You are no longer editing " + a.getName() + ".");
+									break;
+								}
+							}
+							a.setPlayerEditing((Player) sender);
+							sender.sendMessage("[Colisuem] Now editing " + a.getName() + ".");
+							return true;
+						}
 					}
+					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+					return true;
 				}
-				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
-				return true;
+				else {
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.isPlayerEditing((Player) sender)) {
+							a.removeEditor((Player) sender);
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are no longer editing " + a.getName() + ".");
+							return true;
+						}
+					}
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You need to supply an arena to begin editing or you were not editing anything to be removed from.");
+					
+				}
 			}
 			else if(argument.equalsIgnoreCase("posone")) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
@@ -95,13 +115,14 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.isThisArena(args[1])) {
 						a.addPlayer(((Player) sender));
 						plugin.joinPlayer(((Player) sender).getName());
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
 						return true;
 					}
-					((Player) sender).sendMessage(ChatColor.GRAY + "This arena doesn't exist.");
+					((Player) sender).sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 1) {//TODO player permissions
+			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName())) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
@@ -111,6 +132,19 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					((Player) sender).sendMessage(ChatColor.GRAY + "You're not in an arena.");
 					return true;
 				}
+			}
+			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) permissions
+				for(Arena a: plugin.getArenaSet()) {
+					if(a.isThisArena(args[1])) {
+						if(a.enable()) {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
+							return true;
+						}
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena was not ready to be enabled for some reason.");
+						return true;
+					}
+				}
+				((Player) sender).sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 			}
 			//TODO implement other commands (kick, enable, disable, )
 			return true;
