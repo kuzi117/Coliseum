@@ -6,3 +6,4 @@ resource.jardesc
 /bin
 .project
 .classpath
+*.jardesc
