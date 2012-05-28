@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
+import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +36,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			}
 			
 			String argument = args[0];
-			
+			//TODO add you are not editing messages.
 			if(argument.equalsIgnoreCase("create") && args.length >= 3) {//TODO editor permissions
 				if(args[1].equalsIgnoreCase("pvp")) {
 					StringBuilder sb = new StringBuilder();
@@ -67,17 +68,25 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			}
 			else if(argument.equalsIgnoreCase("edit")) {//TODO editor permissions
 				if(args.length >=2) {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i <= (args.length - 1); i++) {
+						if(i + 1 == args.length) {
+							sb.append(args[i]);
+							break;
+						}
+						sb.append(args[i] + " ");
+					}
 					for(Arena a : plugin.getArenaSet()) {
-						if(a.isThisArena(args[1])) {
+						if(a.isThisArena(sb.toString())) {
 							for(Arena a2 : plugin.getArenaSet()) {
 								if(a2.isPlayerEditing((Player) sender)) {
 									a2.removeEditor((Player) sender);
-									sender.sendMessage(ChatColor.GRAY + "You are no longer editing " + a.getName() + ".");
+									sender.sendMessage(ChatColor.GRAY + "You are no longer editing " + sb.toString() + ".");
 									break;
 								}
 							}
 							a.setPlayerEditing((Player) sender);
-							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + a.getName() + ".");
+							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
 							return true;
 						}
 					}
@@ -100,7 +109,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
-						sender.sendMessage(ChatColor.GRAY + "Position one set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -109,7 +118,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
-						sender.sendMessage(ChatColor.GRAY + "Waiting position one set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -118,7 +127,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
-						sender.sendMessage(ChatColor.GRAY + "Position two set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -127,7 +136,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
-						sender.sendMessage(ChatColor.GRAY + "Waiting position two set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -145,12 +154,12 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								sb.append(args[i] + " ");
 							}
 							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
-								((PVPArena) a).getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation());
+								 a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation());
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set!");
 								return true;
 							}
-							else if(((PVPArena) a).getTeams().containsKey(sb.toString())) {//TODO if containsKey is case sensitive need new way to match arena names
-								((PVPArena) a).getRegion().addTeamSpawn(args[1], ((Player) sender).getTargetBlock(null, 10).getLocation());
+							else if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
+								((PVPRegion) a.getRegion()).addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation());
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created!");
 								return true;
 							}
@@ -158,6 +167,23 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No spawn with that name was found. No spawn was set.");
 							}
 						}
+					}
+				}
+			}
+			else if(argument.equalsIgnoreCase("addteam") && args.length >= 2) {
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i + 1 == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						a.addTeamName(sb.toString().toLowerCase());
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " added.");
+						return true;
 					}
 				}
 			}
@@ -224,7 +250,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 				return true;
 			}
-			//TODO implement other commands (kick, forcestart, createteam)
+			//TODO implement other commands (kick, forcestart, forcend, createteam, removeteam)
 			//TODO implement a "help" message.
 			return true;
 		}
