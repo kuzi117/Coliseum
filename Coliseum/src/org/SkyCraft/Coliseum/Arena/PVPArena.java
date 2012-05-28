@@ -1,6 +1,5 @@
 package org.SkyCraft.Coliseum.Arena;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,13 +10,11 @@ import org.bukkit.entity.Player;
 public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
 	private PVPRegion arenaRegion;
-	private HashMap<String, Integer> teams;
 
 	public PVPArena(String arenaName) {
 		super(arenaName);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
-		teams = new HashMap<String, Integer>();
 	}
 
 	public PVPRegion getRegion() {
@@ -47,21 +44,12 @@ public class PVPArena extends Arena {
 			}
 		}
 	}
-	
-	public HashMap<String, Integer> getTeams() {
-		return teams;
-	}
 
 	public boolean enable() {
 		if(!arenaRegion.isCompleteRegion(teams.size())) {
 			return false;
 		}
 		return super.enable();
-	}
-	
-	public void addTeamName(String name) {
-		teams.put(name, 0);
-		return;
 	}
 
 	public void start() {
