@@ -11,7 +11,10 @@ public abstract class Region {
 	
 	//TODO implement checks to ensure no "flat" regions
 
-	Region() {}
+	Region() {
+		pos1 = new Vector();
+		pos2 = new Vector();
+	}
 	
 	public void setPos1(Block block) {
 		pos1.setX(block.getX());
@@ -38,8 +41,9 @@ public abstract class Region {
 	}
 	
 	protected boolean isCompleteRegion() {
-		if(pos1 == null || pos2 == null)
+		if(pos1 == null || pos2 == null) {
 			return false;
+		}
 		return true;
 	}
 	
