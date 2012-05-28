@@ -1,5 +1,6 @@
 package org.SkyCraft.Coliseum.Arena;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 public abstract class Arena {
 	protected Set<Player> editors;
 	protected WaitingRegion waitingRegion;
+	protected HashMap<String, Integer> teams;
 	private String arenaName;
 	private boolean enabled;
 	
@@ -19,6 +21,7 @@ public abstract class Arena {
 		waitingRegion = new WaitingRegion();
 		this.arenaName = arenaName;
 		enabled = false;
+		teams = new HashMap<String, Integer>();
 	}
 	
 	public boolean isThisArena(String name) {
@@ -47,6 +50,15 @@ public abstract class Arena {
 	public void removeEditor(Player editor) {
 		editors.remove(editor);
 		return;
+	}
+	
+	public void addTeamName(String name) {
+		teams.put(name, 0);
+		return;
+	}
+	
+	public HashMap<String, Integer> getTeams() {
+		return teams;
 	}
 	
 	public WaitingRegion getWaitingRegion() {
