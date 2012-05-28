@@ -8,6 +8,7 @@ public class PVPRegion extends Region {
 	private HashMap<String, Location> teamSpawns;
 	
 	public PVPRegion() {
+		super();
 		teamSpawns = new HashMap<String, Location>();
 	}
 	
