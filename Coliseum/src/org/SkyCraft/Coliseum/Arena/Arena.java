@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.SkyCraft.Coliseum.Arena.Region.Region;
+import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -89,7 +89,7 @@ public abstract class Arena {
 	
 	public abstract void removePlayer(Player player);
 	
-	public abstract Region getRegion();
+	public abstract ArenaRegion getRegion();
 	
 	public abstract void start();
 	
