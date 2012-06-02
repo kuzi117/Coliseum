@@ -20,6 +20,7 @@ public class ColiseumPlugin extends JavaPlugin {
 		log = getLogger();
 		confHandler = new ConfigHandler(this, log);
 		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
+		//confHandler.loadArenas();
 	}
 	
 	public Set<Arena> getArenaSet() {
