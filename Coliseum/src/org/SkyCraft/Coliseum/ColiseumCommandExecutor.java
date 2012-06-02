@@ -85,9 +85,15 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 									break;
 								}
 							}
-							a.setPlayerEditing((Player) sender);
-							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
-							return true;
+							if(!a.isEnabled()) {
+								a.setPlayerEditing((Player) sender);
+								sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
+								return true;
+							}
+							else {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] The arena you chose was enabled; you could not be placed in editing mode.");
+								return true;
+							}
 						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
@@ -154,17 +160,23 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								sb.append(args[i] + " ");
 							}
 							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
-								 a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation());
-								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set!");
+								 if(a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation())) {
+										sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set.");
+								 }
+								 else {
+										sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting spawn was not created.");
+									 
+								 }
 								return true;
 							}
 							else if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
 								((PVPRegion) a.getRegion()).addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation());
-								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created!");
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created.");
 								return true;
 							}
 							else {
-								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No spawn with that name was found. No spawn was set.");
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team with that name was found, no spawn was set.");
+								return true;
 							}
 						}
 					}
@@ -206,10 +218,16 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(sb.toString())) {
-						a.addPlayer(((Player) sender));
-						plugin.joinPlayer(((Player) sender).getName());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
-						return true;
+						if(a.isEnabled()) {
+							a.addPlayer(((Player) sender));
+							plugin.joinPlayer(((Player) sender).getName());
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was not enabled.");
+							return true;
+						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 					return true;
