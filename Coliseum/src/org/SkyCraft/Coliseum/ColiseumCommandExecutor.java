@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
-import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
+import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,10 +17,12 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 
 	private ColiseumPlugin plugin;
 	private Logger log;
+	private ConfigHandler config;
 
-	ColiseumCommandExecutor(ColiseumPlugin plugin, Logger log) {
+	ColiseumCommandExecutor(ColiseumPlugin plugin, Logger log, ConfigHandler config) {
 		this.plugin = plugin;
 		this.log = log;
+		this.config = config;
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String aliasUsed, String[] args) {
@@ -28,7 +30,6 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			sender.sendMessage("[Colisuem] Coliseum can only be used in-game.");
 			return true;
 		}
-
 		else {
 			if(args.length == 0) {
 				sender.sendMessage(ChatColor.GRAY + "[Colisuem] You need to add arguments to do anything useful.");
@@ -49,6 +50,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 					PVPArena a = new PVPArena(sb.toString());
 					plugin.getArenaSet().add(a);
+					config.createArena(sb.toString(), "pvp");
 					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
 					for(Arena a2 : plugin.getArenaSet()) {
 						if(a2.isPlayerEditing((Player) sender)) {
@@ -115,6 +117,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						config.setArenaPos(1, a.getName(), a.getRegion().getPos1());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
@@ -124,6 +127,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+						config.setArenaPos(3, a.getName(), a.getWaitingRegion().getPos1());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
@@ -133,6 +137,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						config.setArenaPos(2, a.getName(), a.getRegion().getPos2());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
@@ -142,6 +147,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+						config.setArenaPos(4, a.getName(), a.getWaitingRegion().getPos2());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
@@ -150,29 +156,35 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {//TODO editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						if(a instanceof PVPArena) {
-							StringBuilder sb = new StringBuilder();
-							for(int i = 1; i <= (args.length - 1); i++) {
-								if(i + 1 == args.length) {
-									sb.append(args[i]);
-									break;
+						StringBuilder sb = new StringBuilder();
+						for(int i = 1; i <= (args.length - 1); i++) {
+							if(i + 1 == args.length) {
+								sb.append(args[i]);
+								break;
+							}
+							sb.append(args[i] + " ");
+						}
+						if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
+							 if(a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation())) {
+								 config.setSpawn(a.getName(), "WaitingAreaSpawn", a.getWaitingRegion().getSpawn());
+								 sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set.");
+							 }
+							 else {
+								 sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting spawn was not created, place spawn inside region.");
+							 }
+							return true;
+						}
+						else if(a instanceof PVPArena) {
+							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
+								if(((ArenaRegion) a.getRegion()).addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation())) {
+									config.setSpawn(a.getName(), sb.toString(), ((ArenaRegion) a.getRegion()).getTeamSpawn(sb.toString()));
+									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created.");
+									return true;
 								}
-								sb.append(args[i] + " ");
-							}
-							if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
-								 if(a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation())) {
-										sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set.");
-								 }
-								 else {
-										sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting spawn was not created.");
-									 
-								 }
-								return true;
-							}
-							else if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
-								((PVPRegion) a.getRegion()).addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation());
-								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created.");
-								return true;
+								else {
+									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Spawn was not created, place spawn inside region.");
+									return true;
+								}
 							}
 							else {
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team with that name was found, no spawn was set.");
@@ -194,6 +206,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.addTeamName(sb.toString().toLowerCase());
+						config.addTeam(a.getName(), sb.toString());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " added.");
 						return true;
 					}
@@ -258,6 +271,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a: plugin.getArenaSet()) {
 					if(a.isThisArena(sb.toString())) {
 						if(a.enable()) {
+							config.setArenaEnabledState(a.getName(), true);
 							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
 							return true;
 						}
@@ -268,7 +282,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 				return true;
 			}
-			//TODO implement other commands (kick, forcestart, forcend, createteam, removeteam)
+			//TODO implement other commands (disable, kick, forcestart, forcend, createteam, removeteam)
 			//TODO implement a "help" message.
 			return true;
 		}
