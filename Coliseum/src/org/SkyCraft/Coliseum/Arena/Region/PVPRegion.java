@@ -13,7 +13,7 @@ public class PVPRegion extends Region {
 	}
 	
 	public void addTeamSpawn(String name, Location loc) {
-		teamSpawns.put(name, loc);
+		teamSpawns.put(name, loc.add(.5, 1, .5));
 		return;
 	}
 	
