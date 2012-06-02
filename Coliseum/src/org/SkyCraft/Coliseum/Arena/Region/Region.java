@@ -47,7 +47,7 @@ public abstract class Region {
 		return true;
 	}
 	
-	public boolean isBlockContained(Location loc) {
+	public boolean isBlockContained(Location loc) {//TODO deal with.
 		if(isBetween(pos1.getBlockX(), pos2.getBlockX(), loc.getBlockX()) && 
 				isBetween(pos1.getBlockY(), pos2.getBlockY(), loc.getBlockY()) && 
 				isBetween(pos1.getBlockZ(), pos2.getBlockZ(), loc.getBlockZ())) {
