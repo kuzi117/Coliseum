@@ -9,17 +9,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ColiseumPlugin extends JavaPlugin {
 
-	private ColiseumCommandExecutor executor;
-	private Logger log = Logger.getLogger("Minecraft");
+	private Logger log;
 	private Set<Arena> arenaSet = new HashSet<Arena>();
 	private Set<String> playerAlreadyJoined = new HashSet<String>();
-	//private ConfigHandler confHandler;
+	private ConfigHandler confHandler;
+	private ColiseumCommandExecutor executor;
 	//TODO Need logout listener to remove and move player on logout
 	
-	
 	public void onEnable() {
-		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log));
-		//confHandler = new ConfigHandler(this);
+		log = getLogger();
+		confHandler = new ConfigHandler(this, log);
+		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
 	}
 	
 	public Set<Arena> getArenaSet() {
@@ -38,6 +38,10 @@ public class ColiseumPlugin extends JavaPlugin {
 	public void leavePlayer(String name) {
 		playerAlreadyJoined.remove(name);
 		return;
+	}
+
+	public ConfigHandler getConfigHandler() {
+		return confHandler;
 	}
 
 }
