@@ -40,6 +40,14 @@ public abstract class Region {
 		pos2.setZ(z);
 	}
 	
+	public Vector getPos1() {
+		return pos1;
+	}
+	
+	public Vector getPos2() {
+		return pos2;
+	}
+	
 	protected boolean isCompleteRegion() {
 		if(pos1 == null || pos2 == null) {
 			return false;
@@ -47,9 +55,9 @@ public abstract class Region {
 		return true;
 	}
 	
-	public boolean isBlockContained(Location loc) {//TODO deal with.
+	public boolean isBlockContained(Location loc) {
 		if(isBetween(pos1.getBlockX(), pos2.getBlockX(), loc.getBlockX()) && 
-				isBetween(pos1.getBlockY(), pos2.getBlockY(), loc.getBlockY()) && 
+				isYBetween(pos1.getBlockY(), pos2.getBlockY(), loc.getBlockY()) && 
 				isBetween(pos1.getBlockZ(), pos2.getBlockZ(), loc.getBlockZ())) {
 			return true;
 		}
@@ -65,6 +73,20 @@ public abstract class Region {
 		}
 		else {
 			if(cB < c2 && cB > c1) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isYBetween(int c1, int c2, int cB) {
+		if(c1 > c2) {
+			if(cB < c1 && cB > c2 - 1) {
+				return true;
+			}
+		}
+		else {
+			if(cB < c2 && cB > c1 - 1) {
 				return true;
 			}
 		}
