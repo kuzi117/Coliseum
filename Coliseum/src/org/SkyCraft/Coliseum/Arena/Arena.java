@@ -39,10 +39,6 @@ public abstract class Arena {
 	}
 
 	public void setPlayerEditing(Player editor) {
-		if(enabled) {
-			editor.sendMessage(ChatColor.GRAY + "[Coliseum] The arena you chose was enabled; you could not be placed in editing mode.");
-			return;
-		}
 		editors.add(editor);
 		return;
 	}
@@ -75,7 +71,8 @@ public abstract class Arena {
 			}
 			editors.clear();
 		}
-		return enabled = true;
+		enabled = true;
+		return true;
 	}
 	
 	public boolean isEnabled() {
