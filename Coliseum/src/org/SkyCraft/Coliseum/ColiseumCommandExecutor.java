@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
+import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -280,6 +281,33 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
 				return true;
+			}
+			else if(argument.equalsIgnoreCase("team") && args.length >= 2) {
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i + 1 == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.hasThisPlayer((Player) sender)) {
+						if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
+							a.getCombatant((Player) sender).setTeam(sb.toString());
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.GRAY + "[Colisuem] No team was found by that name.");
+							return true;
+						}
+					}
+				}
+			}
+			else if(argument.equalsIgnoreCase("start")) {//TODO FIX ME
+				for(Arena a : plugin.getArenaSet()) {
+					a.start();
+				}
 			}
 			//TODO implement other commands (disable, kick, forcestart, forcend, createteam, removeteam)
 			//TODO implement a "help" message.
