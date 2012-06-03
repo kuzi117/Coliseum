@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 public abstract class Combatant {
 
 	protected Player player;
-	Location prevLoc;
+	private Location prevLoc;
 	private boolean readiness;
-	private String team;
+	protected String team;
 	
 	public Combatant(Player player) {
 		this.player = player;
