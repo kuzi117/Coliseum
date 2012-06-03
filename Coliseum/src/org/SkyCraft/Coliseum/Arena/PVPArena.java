@@ -1,15 +1,12 @@
 package org.SkyCraft.Coliseum.Arena;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
 import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
@@ -100,13 +97,11 @@ public class PVPArena extends Arena {
 	}
 
 	public void broadcastScore() {
-		List<String> messageList = new ArrayList<String>();
-		messageList.add(ChatColor.GRAY + "The score is:");
-		for(String team : teams.keySet()) {
-			messageList.add(ChatColor.GRAY + team + ": " + ChatColor.GOLD + teams.get(team));
-		}
 		for(PVPCombatant c : combatants) {
-			c.getPlayer().sendMessage((String[]) messageList.toArray());
+			c.getPlayer().sendMessage(ChatColor.GRAY + "The score is:");
+			for(String team : teams.keySet()) {
+				c.getPlayer().sendMessage(ChatColor.GRAY + team + ": " + ChatColor.GOLD + teams.get(team));
+			}
 		}
 	}
 
