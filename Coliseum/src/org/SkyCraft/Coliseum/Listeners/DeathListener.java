@@ -13,12 +13,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class DeathListener implements Listener {
 
 	private ColiseumPlugin plugin;
 
-	DeathListener(ColiseumPlugin plugin) {
+	public DeathListener(ColiseumPlugin plugin) {
 		this.plugin = plugin;
 	}
 	//TODO up priority
@@ -35,8 +36,8 @@ public class DeathListener implements Listener {
 						if(a instanceof PVPArena && a.hasThisPlayer((Player) ((EntityDamageByEntityEvent) lastDamage).getDamager())) {
 							Player killer = (Player) ((EntityDamageByEntityEvent) lastDamage).getDamager();
 							((PVPArena) a).broadcastKill(dead, killer);
-							a.broadcastScore();
 							a.incrementTeamPoints(a.getCombatant(killer).getTeam());
+							a.broadcastScore();
 							return;
 						}
 					}
@@ -47,8 +48,8 @@ public class DeathListener implements Listener {
 							if(a instanceof PVPArena && a.hasThisPlayer((Player) ((Projectile) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getShooter())) {
 								Player killer = (Player) ((Projectile) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getShooter();
 								((PVPArena) a).broadcastKill(dead, killer);
-								a.broadcastScore();
 								a.incrementTeamPoints(a.getCombatant(killer).getTeam());
+								a.broadcastScore();
 								return;
 							}
 						}
@@ -60,8 +61,8 @@ public class DeathListener implements Listener {
 							if(a instanceof PVPArena && a.hasThisPlayer((Player) ((Tameable) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getOwner())) {
 								Player killer = (Player) ((Tameable) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getOwner();
 								((PVPArena) a).broadcastKill(dead, killer);
-								a.broadcastScore();
 								a.incrementTeamPoints(a.getCombatant(killer).getTeam());
+								a.broadcastScore();
 								return;
 							}
 						}
@@ -75,11 +76,22 @@ public class DeathListener implements Listener {
 						if(a instanceof PVPArena) {
 							if(a.hasThisPlayer(dead)) {
 								((PVPArena) a).broadcastSuicide(dead);
-							a.decrementTeamPoints(a.getCombatant(dead).getTeam());
+								a.decrementTeamPoints(a.getCombatant(dead).getTeam());
+								a.broadcastScore();
 							}
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void handleRespawn(PlayerRespawnEvent e) {
+		Player p = e.getPlayer();
+		for(Arena a : plugin.getArenaSet()) {
+			if(a.hasThisPlayer(p)) {
+				e.setRespawnLocation(a.getRegion().getTeamSpawn(a.getCombatant(p).getTeam()));
 			}
 		}
 	}
