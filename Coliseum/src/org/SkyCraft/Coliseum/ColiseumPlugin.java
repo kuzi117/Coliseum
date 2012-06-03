@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
+import org.SkyCraft.Coliseum.Listeners.DeathListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ColiseumPlugin extends JavaPlugin {
@@ -14,13 +15,16 @@ public class ColiseumPlugin extends JavaPlugin {
 	private Set<String> playerAlreadyJoined = new HashSet<String>();
 	private ConfigHandler confHandler;
 	private ColiseumCommandExecutor executor;
+	private DeathListener dListener;
 	//TODO Need logout listener to remove and move player on logout
 	
 	public void onEnable() {
 		log = getLogger();
 		confHandler = new ConfigHandler(this, log);
 		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
-		//confHandler.loadArenas();
+		confHandler.loadArenas();
+		dListener = new DeathListener(this);
+		getServer().getPluginManager().registerEvents(dListener, this);
 	}
 	
 	public Set<Arena> getArenaSet() {
