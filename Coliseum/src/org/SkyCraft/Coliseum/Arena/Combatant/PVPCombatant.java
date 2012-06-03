@@ -5,8 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class PVPCombatant extends Combatant {
-	
-	String team;
 
 	public PVPCombatant(Player player) {
 		super(player);
