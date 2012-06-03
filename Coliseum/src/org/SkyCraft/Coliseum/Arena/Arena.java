@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
 import org.bukkit.ChatColor;
@@ -14,7 +15,9 @@ public abstract class Arena {
 	protected WaitingRegion waitingRegion;
 	protected HashMap<String, Integer> teams;
 	private String arenaName;
-	private boolean enabled;
+	protected boolean enabled;
+	protected boolean started;
+	private int maxPoints;
 	
 	Arena(String arenaName) {
 		editors = new HashSet<Player>();
@@ -82,15 +85,39 @@ public abstract class Arena {
 	public String getName() {
 		return arenaName;
 	}
-	
+
+	public void incrementTeamPoints(String team) {
+		int i = teams.get(team);
+		i++;
+		if(i >= maxPoints) {
+			end();
+			return;
+		}
+		teams.put(team, i);
+		return;
+	}
+
+	public void decrementTeamPoints(String team) {
+		int i = teams.get(team);
+		i--;
+		teams.put(team, i);
+		return;
+	}
+
 	public abstract boolean hasThisPlayer(Player player);
 
 	public abstract void addPlayer(Player player);
 	
 	public abstract void removePlayer(Player player);
 	
+	public abstract Combatant getCombatant(Player player);
+	
 	public abstract ArenaRegion getRegion();
 	
-	public abstract void start();
+	public abstract boolean start();
+	
+	protected abstract void end();
+
+	public abstract void broadcastScore();
 	
 }
