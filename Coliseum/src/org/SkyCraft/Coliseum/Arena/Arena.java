@@ -17,7 +17,7 @@ public abstract class Arena {
 	private String arenaName;
 	protected boolean enabled;
 	protected boolean started;
-	private int maxPoints;
+	private int maxPoints = 10; //TODO CHANGE
 	
 	Arena(String arenaName) {
 		editors = new HashSet<Player>();
