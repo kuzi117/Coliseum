@@ -295,12 +295,23 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.hasThisPlayer((Player) sender)) {
 						if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
 							a.getCombatant((Player) sender).setTeam(sb.toString());
+							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Your team is now set to " + sb.toString() + ".");
 							return true;
 						}
 						else {
 							sender.sendMessage(ChatColor.GRAY + "[Colisuem] No team was found by that name.");
 							return true;
 						}
+					}
+				}
+			}
+			else if(argument.equalsIgnoreCase("ready")) {//TODO fix me
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.hasThisPlayer((Player) sender)) {
+						Combatant c = a.getCombatant((Player) sender);
+						c.setReadiness(!c.isReady());
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are now " + (c.isReady() ? "ready." : "not ready."));
+						return true;
 					}
 				}
 			}
