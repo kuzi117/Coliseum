@@ -3,6 +3,7 @@ package org.SkyCraft.Coliseum.Arena;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
 import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
 import org.bukkit.ChatColor;
@@ -12,8 +13,8 @@ public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
 	private PVPRegion arenaRegion;
 
-	public PVPArena(String arenaName) {
-		super(arenaName);
+	public PVPArena(String arenaName, ColiseumPlugin plugin) {
+		super(arenaName, plugin);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
 	}
@@ -42,6 +43,7 @@ public class PVPArena extends Arena {
 			if(combatant.getPlayer().equals(player)) {
 				combatants.remove(combatant);
 				combatant.returnToLoc();
+				return;
 			}
 		}
 	}
@@ -81,7 +83,15 @@ public class PVPArena extends Arena {
 	}
 
 	protected void end() {
-		// TODO Auto-generated method stub
+		started = false;
+		for(PVPCombatant c : combatants) {
+			c.returnToLoc();
+			plugin.leavePlayer(c.getPlayer().getName());
+		}
+		combatants.clear();
+		for(String team : teams.keySet()) {
+			teams.put(team, 0);
+		}
 		
 	}
 
