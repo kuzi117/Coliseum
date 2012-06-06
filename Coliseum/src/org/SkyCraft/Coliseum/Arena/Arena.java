@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
@@ -12,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
-	protected ColiseumPlugin plugin;
 	protected Set<Player> editors;
 	protected WaitingRegion waitingRegion;
 	protected HashMap<String, Integer> teams;
@@ -21,8 +19,7 @@ public abstract class Arena {
 	protected boolean started;
 	private int maxPoints = 10; //TODO CHANGE
 	
-	Arena(String arenaName, ColiseumPlugin plugin) {
-		this.plugin = plugin;
+	Arena(String arenaName) {
 		editors = new HashSet<Player>();
 		waitingRegion = new WaitingRegion();
 		this.arenaName = arenaName;

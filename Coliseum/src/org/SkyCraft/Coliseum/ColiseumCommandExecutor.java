@@ -48,7 +48,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 						sb.append(args[i] + " ");
 					}
-					PVPArena a = new PVPArena(sb.toString(), plugin);
+					PVPArena a = new PVPArena(sb.toString());
 					plugin.getArenaSet().add(a);
 					config.createArena(sb.toString(), "pvp");
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Created a new PVP arena called " + sb.toString() + ".");

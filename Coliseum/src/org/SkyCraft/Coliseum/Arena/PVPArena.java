@@ -13,8 +13,8 @@ public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
 	private PVPRegion arenaRegion;
 
-	public PVPArena(String arenaName, ColiseumPlugin plugin) {
-		super(arenaName, plugin);
+	public PVPArena(String arenaName) {
+		super(arenaName);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
 	}
@@ -85,8 +85,7 @@ public class PVPArena extends Arena {
 	protected void end() {
 		started = false;
 		for(PVPCombatant c : combatants) {
-			c.returnToLoc();
-			plugin.leavePlayer(c.getPlayer().getName());
+			c.toWaitingArea(waitingRegion);
 		}
 		combatants.clear();
 		for(String team : teams.keySet()) {
