@@ -18,6 +18,7 @@ public abstract class Arena {
 	protected boolean enabled;
 	protected boolean started;
 	private int maxPoints = 10; //TODO CHANGE
+	protected String winners;
 	
 	Arena(String arenaName) {
 		editors = new HashSet<Player>();
@@ -62,6 +63,18 @@ public abstract class Arena {
 	
 	public WaitingRegion getWaitingRegion() {
 		return waitingRegion;
+	}
+	
+	protected String findWinningTeam() {
+		int i = 0;
+		
+		for(String t : teams.keySet()) {
+			if(i < teams.get(t)) {
+				i = teams.get(t);
+				winners = t;
+			}
+		}
+		return winners;
 	}
 	
 	public boolean enable() {
