@@ -31,16 +31,25 @@ public abstract class Combatant {
 		return;
 	}
 	
-	public void setReadiness(boolean readiness) {
+	public boolean setReadiness(boolean readiness) {
+		if(readiness) {
+			if(team != null) {
+				this.readiness = readiness;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 		this.readiness = readiness;
-		return;
+		return true;
 	}
 	
 	public boolean isReady() {
 		return readiness;
 	}
 	
-	public void setTeam(String team) {
+	public void joinTeam(String team) {
 		this.team = team;
 		return;
 	}
