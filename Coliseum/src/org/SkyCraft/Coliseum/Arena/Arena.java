@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
@@ -11,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
+	protected ColiseumPlugin plugin;
 	protected Set<Player> editors;
 	protected WaitingRegion waitingRegion;
 	protected HashMap<String, Integer> teams;
@@ -19,7 +21,8 @@ public abstract class Arena {
 	protected boolean started;
 	private int maxPoints = 10; //TODO CHANGE
 	
-	Arena(String arenaName) {
+	Arena(String arenaName, ColiseumPlugin plugin) {
+		this.plugin = plugin;
 		editors = new HashSet<Player>();
 		waitingRegion = new WaitingRegion();
 		this.arenaName = arenaName;
@@ -97,10 +100,12 @@ public abstract class Arena {
 		return;
 	}
 
-	public void decrementTeamPoints(String team) {
+	public void decrementTeamPoints(String team) {//TODO Perhaps allow setting of maxNegScore? Irrelevant for CTF though.
 		int i = teams.get(team);
-		i--;
-		teams.put(team, i);
+		if(i <= 0) {
+			i--;
+			teams.put(team, i);
+		}
 		return;
 	}
 
