@@ -27,12 +27,12 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String aliasUsed, String[] args) {
 		if(sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
-			sender.sendMessage("[Colisuem] Coliseum can only be used in-game.");
+			sender.sendMessage("[Coliseum] Coliseum can only be used in-game.");
 			return true;
 		}
 		else {
 			if(args.length == 0) {
-				sender.sendMessage(ChatColor.GRAY + "[Colisuem] You need to add arguments to do anything useful.");
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You need to add arguments to do anything useful.");
 				return true;
 			}
 
@@ -48,10 +48,10 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 						sb.append(args[i] + " ");
 					}
-					PVPArena a = new PVPArena(sb.toString());
+					PVPArena a = new PVPArena(sb.toString(), plugin);
 					plugin.getArenaSet().add(a);
 					config.createArena(sb.toString(), "pvp");
-					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Created a new PVP arena called " + sb.toString() + ".");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Created a new PVP arena called " + sb.toString() + ".");
 					for(Arena a2 : plugin.getArenaSet()) {
 						if(a2.isPlayerEditing((Player) sender)) {
 							a2.removeEditor((Player) sender);
@@ -60,11 +60,11 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 					a.setPlayerEditing((Player) sender);
-					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Now editing " + sb.toString() + ".");
 					return true;
 				}
 				else {
-					sender.sendMessage(ChatColor.GRAY + "[Colisuem] Not a recognized arena type.");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Not a recognized arena type.");
 					return true;
 				}
 			}
@@ -83,13 +83,13 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							for(Arena a2 : plugin.getArenaSet()) {
 								if(a2.isPlayerEditing((Player) sender)) {
 									a2.removeEditor((Player) sender);
-									sender.sendMessage(ChatColor.GRAY + "You are no longer editing " + sb.toString() + ".");
+									sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are no longer editing " + sb.toString() + ".");
 									break;
 								}
 							}
 							if(!a.isEnabled()) {
 								a.setPlayerEditing((Player) sender);
-								sender.sendMessage(ChatColor.GRAY + "[Colisuem] Now editing " + sb.toString() + ".");
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Now editing " + sb.toString() + ".");
 								return true;
 							}
 							else {
@@ -98,7 +98,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							}
 						}
 					}
-					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
 					return true;
 				}
 				else {
@@ -215,7 +215,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						sender.sendMessage(ChatColor.GRAY + "[Colisuem] You're still editing something. Quit editing and try to join again.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're still editing something. Quit editing and try to join again.");
 						return true;
 					}
 				}
@@ -242,7 +242,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							return true;
 						}
 					}
-					sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
 					return true;
 				}
 			}
@@ -279,7 +279,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
-				sender.sendMessage(ChatColor.GRAY + "[Colisuem] No arena was found by that name.");
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
 				return true;
 			}
 			else if(argument.equalsIgnoreCase("team") && args.length >= 2) {
@@ -294,12 +294,12 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer((Player) sender)) {
 						if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
-							a.getCombatant((Player) sender).setTeam(sb.toString());
-							sender.sendMessage(ChatColor.GRAY + "[Colisuem] Your team is now set to " + sb.toString() + ".");
+							a.getCombatant((Player) sender).joinTeam(sb.toString());
+							sender.sendMessage(ChatColor.GRAY + "[Colisemm] Your team is now set to " + sb.toString() + ".");
 							return true;
 						}
 						else {
-							sender.sendMessage(ChatColor.GRAY + "[Colisuem] No team was found by that name.");
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team was found by that name.");
 							return true;
 						}
 					}
@@ -309,11 +309,17 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer((Player) sender)) {
 						Combatant c = a.getCombatant((Player) sender);
-						c.setReadiness(!c.isReady());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are now " + (c.isReady() ? "ready." : "not ready."));
-						return true;
+						if(c.setReadiness(!c.isReady())) {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are now " + (c.isReady() ? "ready." : "not ready."));
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] You could not be readied for some reason. Ensure you are entirely set up.");
+							return true;
+						}
 					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not in an arena.");
 			}
 			else if(argument.equalsIgnoreCase("start")) {//TODO FIX ME
 				for(Arena a : plugin.getArenaSet()) {
