@@ -65,6 +65,7 @@ public class PVPArena extends Arena {
 	}
 
 	public boolean start() {
+		winners = null;
 		if(enabled) {
 			for(PVPCombatant c : combatants) {
 				if(!c.isReady() || !teams.containsKey(c.getTeam())) {
@@ -86,8 +87,16 @@ public class PVPArena extends Arena {
 		started = false;
 		for(PVPCombatant c : combatants) {
 			c.toWaitingArea(waitingRegion);
+			c.joinTeam(null);
+			Player p = c.getPlayer();
+			p.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome back to the waiting area.");
+			if(findWinningTeam().equalsIgnoreCase(c.getTeam())) {
+				p.sendMessage(ChatColor.GRAY + "[Coliseum] Congrats on winning!");
+			}
+			else {
+				p.sendMessage(ChatColor.GRAY + "[Coliseum] Sorry about the loss, better luck next time!");
+			}
 		}
-		combatants.clear();
 		for(String team : teams.keySet()) {
 			teams.put(team, 0);
 		}
