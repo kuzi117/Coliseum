@@ -212,6 +212,30 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 				}
 			}
+			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i + 1 == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+
+				for(Arena a: plugin.getArenaSet()) {
+					if(a.isThisArena(sb.toString())) {
+						if(a.enable()) {
+							config.setArenaEnabledState(a.getName(), true);
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
+							return true;
+						}
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena was not ready to be enabled for some reason.");
+						return true;
+					}
+				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
+				return true;
+			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
@@ -257,30 +281,6 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
 					return true;
 				}
-			}
-			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
-				StringBuilder sb = new StringBuilder();
-				for(int i = 1; i <= (args.length - 1); i++) {
-					if(i + 1 == args.length) {
-						sb.append(args[i]);
-						break;
-					}
-					sb.append(args[i] + " ");
-				}
-
-				for(Arena a: plugin.getArenaSet()) {
-					if(a.isThisArena(sb.toString())) {
-						if(a.enable()) {
-							config.setArenaEnabledState(a.getName(), true);
-							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
-							return true;
-						}
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena was not ready to be enabled for some reason.");
-						return true;
-					}
-				}
-				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
-				return true;
 			}
 			else if(argument.equalsIgnoreCase("team") && args.length >= 2) {
 				StringBuilder sb = new StringBuilder();
