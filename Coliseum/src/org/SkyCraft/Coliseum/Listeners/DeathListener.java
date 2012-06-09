@@ -3,6 +3,7 @@ package org.SkyCraft.Coliseum.Listeners;
 import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
+import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -36,10 +37,10 @@ public class DeathListener implements Listener {
 						if(a instanceof PVPArena && a.hasThisPlayer((Player) ((EntityDamageByEntityEvent) lastDamage).getDamager())) {
 							e.setDroppedExp(0);
 							e.getDrops().clear();
+							a.setPlayerDead(dead.getName());
 							Player killer = (Player) ((EntityDamageByEntityEvent) lastDamage).getDamager();
 							((PVPArena) a).broadcastKill(dead, killer);
 							a.incrementTeamPoints(a.getCombatant(killer).getTeam());
-							a.broadcastScore();
 							return;
 						}
 					}
@@ -50,10 +51,10 @@ public class DeathListener implements Listener {
 							if(a instanceof PVPArena && a.hasThisPlayer((Player) ((Projectile) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getShooter())) {
 								e.setDroppedExp(0);
 								e.getDrops().clear();
+								a.setPlayerDead(dead.getName());
 								Player killer = (Player) ((Projectile) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getShooter();
 								((PVPArena) a).broadcastKill(dead, killer);
 								a.incrementTeamPoints(a.getCombatant(killer).getTeam());
-								a.broadcastScore();
 								return;
 							}
 						}
@@ -65,10 +66,10 @@ public class DeathListener implements Listener {
 							if(a instanceof PVPArena && a.hasThisPlayer((Player) ((Tameable) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getOwner())) {
 								e.setDroppedExp(0);
 								e.getDrops().clear();
+								a.setPlayerDead(dead.getName());
 								Player killer = (Player) ((Tameable) ((EntityDamageByEntityEvent) lastDamage).getDamager()).getOwner();
 								((PVPArena) a).broadcastKill(dead, killer);
 								a.incrementTeamPoints(a.getCombatant(killer).getTeam());
-								a.broadcastScore();
 								return;
 							}
 						}
@@ -81,11 +82,11 @@ public class DeathListener implements Listener {
 					for(Arena a : plugin.getArenaSet()) {
 						if(a instanceof PVPArena) {
 							if(a.hasThisPlayer(dead)) {
+								a.setPlayerDead(dead.getName());
 								e.setDroppedExp(0);
 								e.getDrops().clear();
 								((PVPArena) a).broadcastSuicide(dead);
 								a.decrementTeamPoints(a.getCombatant(dead).getTeam());
-								a.broadcastScore();
 							}
 						}
 					}
@@ -98,8 +99,18 @@ public class DeathListener implements Listener {
 	public void handleRespawn(PlayerRespawnEvent e) {
 		Player p = e.getPlayer();
 		for(Arena a : plugin.getArenaSet()) {
-			if(a.hasThisPlayer(p)) {
-				e.setRespawnLocation(a.getRegion().getTeamSpawn(a.getCombatant(p).getTeam()));
+			if(a.hasThisPlayer(p) && a.isPlayerDead(p.getName())) {
+				Combatant c = a.getCombatant(p);
+				if(!c.isOldCombatant()) {
+					e.setRespawnLocation(a.getRegion().getTeamSpawn(c.getTeam()));
+					return;
+				}
+				else {
+					e.setRespawnLocation(a.getCombatant(p).getOldLoc());
+					plugin.leavePlayer(p.getName());
+					a.removeCombatant(p);
+					return;
+				}
 			}
 		}
 	}
