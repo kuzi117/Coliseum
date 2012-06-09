@@ -116,7 +116,7 @@ public class ConfigHandler {
 			if(sec.contains("type")) {
 				String type = sec.getString("type");
 				if(type.equalsIgnoreCase("pvp")) {
-					a = new PVPArena(name);
+					a = new PVPArena(name, plugin);
 					plugin.getArenaSet().add(a);
 				}
 				else {
