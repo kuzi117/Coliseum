@@ -48,7 +48,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 						sb.append(args[i] + " ");
 					}
-					PVPArena a = new PVPArena(sb.toString());
+					PVPArena a = new PVPArena(sb.toString(), plugin);
 					plugin.getArenaSet().add(a);
 					config.createArena(sb.toString(), "pvp");
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Created a new PVP arena called " + sb.toString() + ".");
@@ -257,7 +257,6 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.isThisArena(sb.toString())) {
 						if(a.isEnabled()) {
 							a.addPlayer(((Player) sender));
-							plugin.joinPlayer(((Player) sender).getName());
 							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
 							return true;
 						}
@@ -274,7 +273,6 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removePlayer(((Player) sender));
-						plugin.leavePlayer(((Player) sender).getName());
 						sender.sendMessage(ChatColor.GRAY + "Arena left.");
 						return true;
 					}
