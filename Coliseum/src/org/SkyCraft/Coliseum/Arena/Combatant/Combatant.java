@@ -11,10 +11,12 @@ public abstract class Combatant {
 	private Location prevLoc;
 	private boolean readiness;
 	protected String team;
+	private boolean old;
 	
 	public Combatant(Player player) {
 		this.player = player;
 		prevLoc = player.getLocation();
+		old = false;
 	}
 
 	public Player getPlayer() {
@@ -26,9 +28,13 @@ public abstract class Combatant {
 		return;
 	}
 	
-	public void returnToLoc() {
+	public void toOldLoc() {
 		player.teleport(prevLoc, TeleportCause.PLUGIN);
 		return;
+	}
+	
+	public Location getOldLoc() {
+		return prevLoc;
 	}
 	
 	public boolean setReadiness(boolean readiness) {
@@ -56,5 +62,14 @@ public abstract class Combatant {
 	
 	public String getTeam() {
 		return team;
+	}
+	
+	public void setOldCombatant(boolean old) {
+		this.old = old;
+		return;
+	}
+	
+	public boolean isOldCombatant() {
+		return old;
 	}
 }
