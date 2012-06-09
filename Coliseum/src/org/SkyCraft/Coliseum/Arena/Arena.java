@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Region.ArenaRegion;
 import org.SkyCraft.Coliseum.Arena.Region.WaitingRegion;
@@ -11,21 +12,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class Arena {
+	protected ColiseumPlugin plugin;
 	protected Set<Player> editors;
 	protected WaitingRegion waitingRegion;
 	protected HashMap<String, Integer> teams;
 	private String arenaName;
 	protected boolean enabled;
 	protected boolean started;
-	private int maxPoints = 10; //TODO CHANGE
+	private int maxPoints = 3; //TODO CHANGE
+	private Set<String> deadPlayers;
 	protected String winners;
 	
-	Arena(String arenaName) {
+	Arena(String arenaName, ColiseumPlugin plugin) {
+		this.plugin = plugin;
 		editors = new HashSet<Player>();
 		waitingRegion = new WaitingRegion();
 		this.arenaName = arenaName;
 		enabled = false;
 		teams = new HashMap<String, Integer>();
+		deadPlayers = new HashSet<String>();
 	}
 	
 	public boolean isThisArena(String name) {
@@ -77,6 +82,20 @@ public abstract class Arena {
 		return winners;
 	}
 	
+	public void setPlayerDead(String name) {
+		deadPlayers.add(name);
+		return;
+	}
+	
+	public void setPlayerLive(String name) {
+		deadPlayers.remove(name);
+		return;
+	}
+	
+	public boolean isPlayerDead(String name) {
+		return deadPlayers.contains(name);
+	}
+	
 	public boolean enable() {
 		if(!waitingRegion.isCompleteRegion()) {
 			return false;
@@ -94,22 +113,27 @@ public abstract class Arena {
 	public boolean isEnabled() {
 		return enabled;
 	}
+	
+	public boolean isStarted() {
+		return started;
+	}
 
 	public String getName() {
 		return arenaName;
 	}
-
+	
 	public void incrementTeamPoints(String team) {
 		int i = teams.get(team);
 		i++;
+		teams.put(team, i);
+		broadcastScore();
 		if(i >= maxPoints) {
 			end();
 			return;
 		}
-		teams.put(team, i);
 		return;
 	}
-
+	
 	public void decrementTeamPoints(String team) {//TODO Perhaps allow setting of maxNegScore? Irrelevant for CTF though.
 		int i = teams.get(team);
 		if(i <= 0) {
@@ -127,11 +151,13 @@ public abstract class Arena {
 	
 	public abstract Combatant getCombatant(Player player);
 	
+	public abstract void removeCombatant(Player player);
+	
 	public abstract ArenaRegion getRegion();
 	
 	public abstract boolean start();
 	
-	protected abstract void end();
+	public abstract void end();
 
 	public abstract void broadcastScore();
 	
