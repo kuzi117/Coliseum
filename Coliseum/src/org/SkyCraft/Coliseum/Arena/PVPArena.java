@@ -13,8 +13,8 @@ public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
 	private PVPRegion arenaRegion;
 
-	public PVPArena(String arenaName) {
-		super(arenaName);
+	public PVPArena(String arenaName, ColiseumPlugin plugin) {
+		super(arenaName, plugin);
 		arenaRegion = new PVPRegion();
 		combatants = new HashSet<PVPCombatant>();
 	}
@@ -22,7 +22,7 @@ public class PVPArena extends Arena {
 	public PVPRegion getRegion() {
 		return arenaRegion;
 	}
-	
+
 	public boolean hasThisPlayer(Player player) {
 		for(PVPCombatant combatant : combatants) {
 			if (combatant.getPlayer().equals(player)) {
@@ -34,6 +34,7 @@ public class PVPArena extends Arena {
 
 	public void addPlayer(Player player) {
 		PVPCombatant combatant = new PVPCombatant(player);
+		plugin.joinPlayer(player.getName());
 		combatants.add(combatant);
 		combatant.toWaitingArea(waitingRegion);
 	}
@@ -41,13 +42,14 @@ public class PVPArena extends Arena {
 	public void removePlayer(Player player) {
 		for(PVPCombatant combatant: combatants) {
 			if(combatant.getPlayer().equals(player)) {
+				plugin.leavePlayer(player.getName());
 				combatants.remove(combatant);
-				combatant.returnToLoc();
+				combatant.toOldLoc();
 				return;
 			}
 		}
 	}
-	
+
 	public PVPCombatant getCombatant(Player p) {
 		for(PVPCombatant c : combatants) {
 			if(c.getPlayer().equals(p)) {
@@ -55,6 +57,11 @@ public class PVPArena extends Arena {
 			}
 		}
 		return null;
+	}
+
+	public void removeCombatant(Player player) {
+		combatants.remove(getCombatant(player));
+		return;
 	}
 
 	public boolean enable() {
@@ -77,19 +84,26 @@ public class PVPArena extends Arena {
 			return false;
 		}
 		for(PVPCombatant c : combatants) {
-			c.toTeamSpawn(arenaRegion);
+			if(!c.isOldCombatant()) {
+				c.toTeamSpawn(arenaRegion);
+			}
 		}
-		
 		return started = true;
 	}
 
-	protected void end() {
+	public void end() {
 		started = false;
+		Set<PVPCombatant> retain = new HashSet<PVPCombatant>();
 		for(PVPCombatant c : combatants) {
-			c.toWaitingArea(waitingRegion);
-			c.joinTeam(null);
+			if(!isPlayerDead(c.getPlayer().getName())) {
+				c.toOldLoc();
+				plugin.leavePlayer(c.getPlayer().getName());
+			}
+			else {
+				c.setOldCombatant(true);
+				retain.add(c);
+			}
 			Player p = c.getPlayer();
-			p.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome back to the waiting area.");
 			if(findWinningTeam().equalsIgnoreCase(c.getTeam())) {
 				p.sendMessage(ChatColor.GRAY + "[Coliseum] Congrats on winning!");
 			}
@@ -97,40 +111,49 @@ public class PVPArena extends Arena {
 				p.sendMessage(ChatColor.GRAY + "[Coliseum] Sorry about the loss, better luck next time!");
 			}
 		}
+		combatants.retainAll(retain);
 		for(String team : teams.keySet()) {
 			teams.put(team, 0);
 		}
-		
+		return;
 	}
 
 	public void broadcastKill(Player dead, Player killer) {
 		for(PVPCombatant c : combatants) {
-			Player p = c.getPlayer();
-			if(!p.equals(dead) && !p.equals(killer)) {
-				p.sendMessage(ChatColor.RED + killer.getName() + ChatColor.GRAY + " killed " + ChatColor.RED + dead.getName() + ChatColor.GRAY + "!");
+			if(!c.isOldCombatant()) {
+				Player p = c.getPlayer();
+				if(!p.equals(dead) && !p.equals(killer)) {
+					p.sendMessage(ChatColor.RED + killer.getName() + ChatColor.GRAY + " killed " + ChatColor.RED + dead.getName() + ChatColor.GRAY + "!");
+				}
 			}
 		}
 		dead.sendMessage(ChatColor.GRAY + "[Coliseum] You were killed by " + ChatColor.RED + killer.getName() + ChatColor.GRAY +"!");
 		killer.sendMessage(ChatColor.GRAY + "[Coliseum] You killed " + ChatColor.RED + dead.getName() + ChatColor.GRAY +"!");
+		return;
 	}
 
 	public void broadcastScore() {
 		for(PVPCombatant c : combatants) {
-			c.getPlayer().sendMessage(ChatColor.GRAY + "The score is:");
-			for(String team : teams.keySet()) {
-				c.getPlayer().sendMessage(ChatColor.GRAY + team + ": " + ChatColor.GOLD + teams.get(team));
+			if(!c.isOldCombatant()) {
+				c.getPlayer().sendMessage(ChatColor.GRAY + "The score is:");
+				for(String team : teams.keySet()) {
+					c.getPlayer().sendMessage(ChatColor.GRAY + team + ": " + ChatColor.GOLD + teams.get(team));
+				}
 			}
 		}
+		return;
 	}
 
 	public void broadcastSuicide(Player dead) {
 		for(PVPCombatant c : combatants) {
 			Player p = c.getPlayer();
-			if(!p.equals(dead)) {
-				p.sendMessage(ChatColor.RED + dead.getName() + ChatColor.GRAY + " has committed suicide!");
+			if(!c.isOldCombatant()) {
+				if(!p.equals(dead)) {
+					p.sendMessage(ChatColor.RED + dead.getName() + ChatColor.GRAY + " has committed suicide!");
+				}
 			}
 		}
 		dead.sendMessage(ChatColor.GRAY + "[Coliseum] You committed suicide!");
-		
+		return;
 	}
 }
