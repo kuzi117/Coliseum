@@ -206,9 +206,31 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.addTeamName(sb.toString().toLowerCase());
-						config.addTeam(a.getName(), sb.toString());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " added.");
 						return true;
+					}
+				}
+			}
+			else if(argument.equalsIgnoreCase("remteam") && args.length >= 2) {
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i + 1 == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				for(Arena a : plugin.getArenaSet()) {
+					if(a.isPlayerEditing((Player) sender)) {
+						if(a.removeTeamName(sb.toString().toLowerCase())) {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " removed");
+							config.removeTeam(a.getName(), sb.toString());
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team " + sb.toString().toLowerCase() + " was found");
+							return true;
+						}
 					}
 				}
 			}
