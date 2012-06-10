@@ -93,7 +93,7 @@ public class ConfigHandler {
 		return;
 	}
 
-	public void addTeam(String arenaName, String teamName) {
+	public void removeTeam(String arenaName, String teamName) {
 		arenas.set(arenaName + ".spawns." + teamName, null);
 		return;
 	}
