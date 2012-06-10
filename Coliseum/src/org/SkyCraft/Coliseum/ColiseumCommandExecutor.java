@@ -128,7 +128,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
 						config.setArenaPos(3, a.getName(), a.getWaitingRegion().getPos1());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position one set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position one set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
@@ -148,7 +148,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.isPlayerEditing((Player) sender)) {
 						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
 						config.setArenaPos(4, a.getName(), a.getWaitingRegion().getPos2());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting position two set.");
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position two set.");
 						return true;
 					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
 				}
