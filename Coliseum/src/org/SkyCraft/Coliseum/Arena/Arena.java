@@ -62,6 +62,14 @@ public abstract class Arena {
 		return;
 	}
 	
+	public boolean removeTeamName(String name) {
+		if(teams.containsKey(name)) {
+			teams.remove(name);
+			return true;
+		}
+		return false;
+	}
+	
 	public HashMap<String, Integer> getTeams() {
 		return teams;
 	}
