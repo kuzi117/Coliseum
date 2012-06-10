@@ -85,9 +85,9 @@ public class ConfigHandler {
 	}
 
 	public void setSpawn(String arenaName, String team, Location loc) {
-		arenas.set(arenaName + ".spawns." + team + ".x", loc.getX());
-		arenas.set(arenaName + ".spawns." + team + ".y", loc.getY());
-		arenas.set(arenaName + ".spawns." + team + ".z", loc.getZ());
+		arenas.set(arenaName + ".spawns." + team + ".x", loc.getX() - .5);
+		arenas.set(arenaName + ".spawns." + team + ".y", loc.getY() - 1);
+		arenas.set(arenaName + ".spawns." + team + ".z", loc.getZ() - .5);
 		arenas.set(arenaName + ".spawns." + team + ".world", loc.getWorld().getName());
 		saveArenas();
 		return;
