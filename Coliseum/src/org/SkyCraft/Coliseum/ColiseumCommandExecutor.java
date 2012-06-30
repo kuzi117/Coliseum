@@ -287,9 +287,9 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							return true;
 						}
 					}
-					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
-					return true;
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
+				return true;
 			}
 			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName())) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
@@ -314,8 +314,8 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer((Player) sender)) {
 						if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
-							a.getCombatant((Player) sender).joinTeam(sb.toString());
-							sender.sendMessage(ChatColor.GRAY + "[Colisemm] Your team is now set to " + sb.toString() + ".");
+							a.getCombatant((Player) sender).joinTeam(sb.toString().toLowerCase());
+							sender.sendMessage(ChatColor.GRAY + "[Colisemm] Your team is now set to " + sb.toString().toLowerCase() + ".");
 							return true;
 						}
 						else {
