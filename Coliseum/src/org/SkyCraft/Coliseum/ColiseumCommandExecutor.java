@@ -177,8 +177,8 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						else {
 							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
 								if(a.getRegion().addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation())) {
-									config.setSpawn(a.getName(), sb.toString(), a.getRegion().getTeamSpawn(sb.toString()));
-									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString() + " spawn was created.");
+									config.setSpawn(a.getName(), sb.toString().toLowerCase(), a.getRegion().getTeamSpawn(sb.toString().toLowerCase()));
+									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " spawn was created.");
 									return true;
 								}
 								else {
