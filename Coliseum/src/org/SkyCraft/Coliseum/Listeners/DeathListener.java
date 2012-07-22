@@ -108,7 +108,7 @@ public class DeathListener implements Listener {
 				else {
 					e.setRespawnLocation(a.getCombatant(p).getOldLoc());
 					plugin.leavePlayer(p.getName());
-					a.removeCombatant(p);
+					a.removeOldCombatant(p);
 					return;
 				}
 			}
