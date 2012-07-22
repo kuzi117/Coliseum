@@ -248,7 +248,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					if(a.isThisArena(sb.toString())) {
 						if(a.enable()) {
 							config.setArenaEnabledState(a.getName(), true);
-							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled!");
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully enabled.");
 							return true;
 						}
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena was not ready to be enabled for some reason.");
@@ -257,6 +257,29 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
 				return true;
+			}
+			else if(argument.equalsIgnoreCase("disable") && args.length >= 2) {
+				StringBuilder sb = new StringBuilder();
+				for(int i = 1; i <= (args.length - 1); i++) {
+					if(i + 1 == args.length) {
+						sb.append(args[i]);
+						break;
+					}
+					sb.append(args[i] + " ");
+				}
+				
+				for(Arena a: plugin.getArenaSet()) {
+					if(a.isThisArena(sb.toString())) {
+						if(a.disable()) {
+							config.setArenaEnabledState(a.getName(), false);
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was successfully disabled.");
+							return true;
+						}
+						sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena could not be disabled for some reason.");
+						return true;
+					}
+				}
+				
 			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
@@ -278,7 +301,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(sb.toString())) {
 						if(a.isEnabled()) {
-							a.addPlayer(((Player) sender));
+							a.addCombatant(((Player) sender));
 							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
 							return true;
 						}
@@ -294,7 +317,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName())) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
-						a.removePlayer(((Player) sender));
+						a.removeCombatant(((Player) sender));
 						sender.sendMessage(ChatColor.GRAY + "Arena left.");
 						return true;
 					}
