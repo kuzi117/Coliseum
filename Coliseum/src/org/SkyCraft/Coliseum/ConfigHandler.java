@@ -48,6 +48,7 @@ public class ConfigHandler {
 				e1.printStackTrace();
 			}
 		} catch (IOException e) {
+			log.info("Problem reading arena configs from disc.");
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
 			log.info("Arena config was set up incorrectly.");
