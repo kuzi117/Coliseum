@@ -117,6 +117,11 @@ public abstract class Arena {
 		enabled = true;
 		return true;
 	}
+
+	public boolean disable() {
+		enabled = false;
+		return true;
+	}
 	
 	public boolean isEnabled() {
 		return enabled;
@@ -153,13 +158,13 @@ public abstract class Arena {
 
 	public abstract boolean hasThisPlayer(Player player);
 
-	public abstract void addPlayer(Player player);
+	public abstract void addCombatant(Player player);
 	
-	public abstract void removePlayer(Player player);
+	public abstract void removeCombatant(Player player);
 	
 	public abstract Combatant getCombatant(Player player);
 	
-	public abstract void removeCombatant(Player player);
+	public abstract void removeOldCombatant(Player player);
 	
 	public abstract ArenaRegion getRegion();
 	
