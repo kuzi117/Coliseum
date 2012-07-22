@@ -369,7 +369,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					a.start();
 				}
 			}
-			//TODO implement other commands (disable, kick, forcestart, forcend, createteam, removeteam)
+			//TODO implement other commands (disable, kick, forcestart, forcend, createteam, removeteam, query function for teams.)
 			//TODO implement a "help" message.
 			return true;
 		}
