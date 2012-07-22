@@ -32,14 +32,14 @@ public class PVPArena extends Arena {
 		return false;
 	}
 
-	public void addPlayer(Player player) {
+	public void addCombatant(Player player) {
 		PVPCombatant combatant = new PVPCombatant(player);
 		plugin.joinPlayer(player.getName());
 		combatants.add(combatant);
 		combatant.toWaitingArea(waitingRegion);
 	}
 
-	public void removePlayer(Player player) {
+	public void removeCombatant(Player player) {
 		for(PVPCombatant combatant: combatants) {
 			if(combatant.getPlayer().equals(player)) {
 				plugin.leavePlayer(player.getName());
@@ -59,7 +59,7 @@ public class PVPArena extends Arena {
 		return null;
 	}
 
-	public void removeCombatant(Player player) {
+	public void removeOldCombatant(Player player) {
 		combatants.remove(getCombatant(player));
 		return;
 	}
@@ -69,6 +69,16 @@ public class PVPArena extends Arena {
 			return false;
 		}
 		return super.enable();
+	}
+	
+	public boolean disable() {
+		if(!combatants.isEmpty()) {
+			for(PVPCombatant c : combatants) {
+				c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] This arena was disabled.");
+			}
+		}
+		end();
+		return super.disable();
 	}
 
 	public boolean start() {
