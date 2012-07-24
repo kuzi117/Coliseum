@@ -165,18 +165,19 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							sb.append(args[i] + " ");
 						}
 						if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
-							if(a.getWaitingRegion().setSpawn(((Player) sender).getTargetBlock(null, 10).getLocation())) {
+							if(a.getWaitingRegion().setSpawn(((Player) sender).getLocation())) {//TODO save pitch/yaw
 								config.setSpawn(a.getName(), "WaitingAreaSpawn", a.getWaitingRegion().getSpawn());
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set.");
+								return true;
 							}
 							else {
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting spawn was not created, place spawn inside region.");
+								return true;
 							}
-							return true;
 						}
 						else {
 							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
-								if(a.getRegion().addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getTargetBlock(null, 10).getLocation())) {
+								if(a.getRegion().addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getLocation())) {
 									config.setSpawn(a.getName(), sb.toString().toLowerCase(), a.getRegion().getTeamSpawn(sb.toString().toLowerCase()));
 									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " spawn was created.");
 									return true;
@@ -267,7 +268,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 					sb.append(args[i] + " ");
 				}
-				
+
 				for(Arena a: plugin.getArenaSet()) {
 					if(a.isThisArena(sb.toString())) {
 						if(a.disable()) {
@@ -279,7 +280,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
-				
+
 			}
 			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
 				for(Arena a : plugin.getArenaSet()) {
@@ -325,30 +326,44 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("team") && args.length >= 2) {
-				StringBuilder sb = new StringBuilder();
-				for(int i = 1; i <= (args.length - 1); i++) {
-					if(i + 1 == args.length) {
-						sb.append(args[i]);
-						break;
-					}
-					sb.append(args[i] + " ");
-				}
-				for(Arena a : plugin.getArenaSet()) {
-					if(a.hasThisPlayer((Player) sender)) {
-						if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
-							a.getCombatant((Player) sender).joinTeam(sb.toString().toLowerCase());
-							sender.sendMessage(ChatColor.GRAY + "[Colisemm] Your team is now set to " + sb.toString().toLowerCase() + ".");
-							return true;
+			else if(argument.equalsIgnoreCase("team")) {
+				if(args.length >= 2) {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i <= (args.length - 1); i++) {
+						if(i + 1 == args.length) {
+							sb.append(args[i]);
+							break;
 						}
-						else {
-							sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team was found by that name.");
-							return true;
+						sb.append(args[i] + " ");
+					}
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.hasThisPlayer((Player) sender)) {
+							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
+								a.getCombatant((Player) sender).joinTeam(sb.toString().toLowerCase());
+								sender.sendMessage(ChatColor.GRAY + "[Colisemm] Your team is now set to " + sb.toString().toLowerCase() + ".");
+								return true;
+							}
+							else {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] No team was found by that name.");
+								return true;
+							}
+						}
+					}
+				}
+				else {
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.hasThisPlayer((Player) sender)) {
+							StringBuilder sb = new StringBuilder();
+							sb.append("[Coliseum] Teams available are: ");
+							for(String name : a.getTeams().keySet()) {
+								sb.append(name + ", ");
+							}
+							sender.sendMessage(ChatColor.GRAY + sb.replace(sb.length() - 2, sb.length(), ".").toString());
 						}
 					}
 				}
 			}
-			else if(argument.equalsIgnoreCase("ready")) {//TODO fix me
+			else if(argument.equalsIgnoreCase("ready")) {//TODO fix me (fixed?)
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer((Player) sender)) {
 						Combatant c = a.getCombatant((Player) sender);
@@ -369,7 +384,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					a.start();
 				}
 			}
-			//TODO implement other commands (disable, kick, forcestart, forcend, createteam, removeteam, query function for teams.)
+			//TODO implement other commands (kick, forcestart, forcend, createteam, removeteam)
 			//TODO implement a "help" message.
 			return true;
 		}
