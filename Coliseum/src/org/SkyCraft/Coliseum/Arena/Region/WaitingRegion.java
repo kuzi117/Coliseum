@@ -10,7 +10,7 @@ public class WaitingRegion extends Region {
 
 	public boolean setSpawn(Location waitingSpawn) {
 		if(isBlockContained(waitingSpawn)) {
-			this.waitingSpawn = waitingSpawn.add(.5, 1, .5);
+			this.waitingSpawn = waitingSpawn;
 			return true;
 		}
 		return false;
