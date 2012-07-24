@@ -165,7 +165,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							sb.append(args[i] + " ");
 						}
 						if(sb.toString().equalsIgnoreCase("waiting") || sb.toString().equalsIgnoreCase("wait") || sb.toString().equalsIgnoreCase("w")) {
-							if(a.getWaitingRegion().setSpawn(((Player) sender).getLocation())) {//TODO save pitch/yaw
+							if(a.getWaitingRegion().setSpawn(((Player) sender).getLocation())) {
 								config.setSpawn(a.getName(), "WaitingAreaSpawn", a.getWaitingRegion().getSpawn());
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting area spawn set.");
 								return true;
@@ -379,9 +379,35 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not in an arena.");
 			}
-			else if(argument.equalsIgnoreCase("start")) {//TODO FIX ME
-				for(Arena a : plugin.getArenaSet()) {
-					a.start();
+			else if(argument.equalsIgnoreCase("forcestart")) {//TODO make me better!
+				if(args.length > 2) {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i <= (args.length - 1); i++) {
+						if(i + 1 == args.length) {
+							sb.append(args[i]);
+							break;
+						}
+						sb.append(args[i] + " ");
+					}
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.isThisArena(sb.toString().toLowerCase())) {
+							if(a.forceStart()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was successfully forced to start.");
+							}
+							return true;
+						}
+					}
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena by the name of " + sb.toString() + " was found.");
+				}
+				else {
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.hasThisPlayer((Player) sender)) {
+							if(a.forceStart()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + a.getName() + " was successfully forced to start.");
+							}
+							return true;
+						}
+					}
 				}
 			}
 			//TODO implement other commands (kick, forcestart, forcend, createteam, removeteam)
