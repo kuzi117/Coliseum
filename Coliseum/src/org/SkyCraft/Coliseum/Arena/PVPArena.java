@@ -100,6 +100,11 @@ public class PVPArena extends Arena {
 		}
 		return started = true;
 	}
+	
+	public boolean forceStart() {//TODO
+		
+		return true;
+	}
 
 	public void end() {
 		started = false;
