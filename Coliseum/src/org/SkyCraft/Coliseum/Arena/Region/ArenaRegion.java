@@ -16,7 +16,7 @@ public abstract class ArenaRegion extends Region {
 
 	public boolean addTeamSpawn(String name, Location loc) {
 		if(isBlockContained(loc)) {
-			teamSpawns.put(name, loc.add(.5, 1, .5));
+			teamSpawns.put(name, loc);
 			return true;
 		}
 		return false;
