@@ -89,6 +89,8 @@ public class ConfigHandler {
 		arenas.set(arenaName + ".spawns." + team + ".x", loc.getX());
 		arenas.set(arenaName + ".spawns." + team + ".y", loc.getY());
 		arenas.set(arenaName + ".spawns." + team + ".z", loc.getZ());
+		arenas.set(arenaName + ".spawns." + team + ".yaw", loc.getYaw());
+		arenas.set(arenaName + ".spawns." + team + ".pitch", loc.getPitch());
 		arenas.set(arenaName + ".spawns." + team + ".world", loc.getWorld().getName());
 		saveArenas();
 		return;
@@ -113,7 +115,7 @@ public class ConfigHandler {
 
 		for(String name : arenaNames) {
 			Arena a = null;
-			ConfigurationSection sec = arenas.getConfigurationSection(name); //TODO Manage enabled at end of load. Check if CompleteRegion and if file said enabled then set enabled else set file to false.
+			ConfigurationSection sec = arenas.getConfigurationSection(name);
 			if(sec.contains("type")) {
 				String type = sec.getString("type");
 				if(type.equalsIgnoreCase("pvp")) {
@@ -153,13 +155,15 @@ public class ConfigHandler {
 				for(String teamName : teamNames) {
 					if(teamName.equalsIgnoreCase("waitingareaspawn")) {
 						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".y")) {
-							a.getWaitingRegion().setSpawn(new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"), sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z")));
+							a.getWaitingRegion().setSpawn(new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"), 
+									sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z"), (float) sec2.getDouble(teamName + ".yaw"), (float) sec2.getDouble(teamName + ".pitch")));
 						}
 					}
 					else {
 						a.addTeamName(teamName);
 						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".y")) {
-							a.getRegion().addTeamSpawn(teamName, new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"), sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z")));
+							a.getRegion().addTeamSpawn(teamName, new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"),
+									sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z"), (float) sec2.getDouble(teamName + ".yaw"), (float) sec2.getDouble(teamName + ".pitch")));
 						}
 					}
 				}
