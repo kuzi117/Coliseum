@@ -87,6 +87,9 @@ public abstract class Arena {
 				winners = t;
 			}
 		}
+		if(winners == null) {
+			winners = teams.keySet().iterator().next();
+		}
 		return winners;
 	}
 	
