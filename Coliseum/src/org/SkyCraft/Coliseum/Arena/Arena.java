@@ -173,6 +173,8 @@ public abstract class Arena {
 	
 	public abstract boolean start();
 	
+	public abstract boolean forceStart();
+	
 	public abstract void end();
 
 	public abstract void broadcastScore();
