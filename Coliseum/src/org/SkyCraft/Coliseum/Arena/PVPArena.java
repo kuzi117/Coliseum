@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.SkyCraft.Coliseum.ColiseumPlugin;
+import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
 import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
 import org.bukkit.ChatColor;
@@ -50,6 +51,13 @@ public class PVPArena extends Arena {
 		}
 	}
 
+	public void removeCombatant(Combatant combatant) {
+		plugin.leavePlayer(combatant.getPlayer().getName());
+		combatants.remove(combatant);
+		combatant.toOldLoc();
+		return;
+	}
+
 	public PVPCombatant getCombatant(Player p) {
 		for(PVPCombatant c : combatants) {
 			if(c.getPlayer().equals(p)) {
@@ -81,7 +89,7 @@ public class PVPArena extends Arena {
 		return super.disable();
 	}
 
-	public boolean start() {
+	public boolean start() {//TODO make sure teams are equal in some way.
 		winners = null;
 		if(enabled) {
 			for(PVPCombatant c : combatants) {
@@ -101,9 +109,13 @@ public class PVPArena extends Arena {
 		return started = true;
 	}
 	
-	public boolean forceStart() {//TODO
-		
-		return true;
+	public boolean forceStart() {//TODO Should work.
+		for(PVPCombatant c : combatants) {
+			if(!c.isReady()) {
+				removeCombatant(c);
+			}
+		}
+		return start();
 	}
 
 	public void end() {
