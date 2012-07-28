@@ -402,6 +402,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 								sb.append(name + ", ");
 							}
 							sender.sendMessage(ChatColor.GRAY + sb.replace(sb.length() - 2, sb.length(), ".").toString());
+							return true;
 						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");

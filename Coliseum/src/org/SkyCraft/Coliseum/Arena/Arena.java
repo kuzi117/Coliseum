@@ -165,6 +165,8 @@ public abstract class Arena {
 	
 	public abstract void removeCombatant(Player player);
 	
+	public abstract void removeCombatant(Combatant combatant);
+	
 	public abstract Combatant getCombatant(Player player);
 	
 	public abstract void removeOldCombatant(Player player);
