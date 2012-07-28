@@ -37,8 +37,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 			}
 
 			String argument = args[0];
-			//TODO add you are not editing messages.
-			if(argument.equalsIgnoreCase("create") && args.length >= 3) {//TODO editor permissions
+			if(argument.equalsIgnoreCase("create") && args.length >= 3) {//editor permissions
 				if(args[1].equalsIgnoreCase("pvp")) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 2; i <= (args.length - 1); i++) {
@@ -68,7 +67,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("edit")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("edit")) {//editor permissions
 				if(args.length >=2) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 1; i <= (args.length - 1); i++) {
@@ -113,47 +112,79 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("posone") || argument.equalsIgnoreCase("po") || argument.equalsIgnoreCase("p1")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("posone") || argument.equalsIgnoreCase("po") || argument.equalsIgnoreCase("p1")) {//editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
+						if(!((Player) sender).getTargetBlock(null, 10).isEmpty()) {
 						a.getRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
 						config.setArenaPos(1, a.getName(), a.getRegion().getPos1());
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position one set.");
 						return true;
-					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+						}
+						else {
+							((Player) sender).sendMessage(ChatColor.GRAY + "[Coliseum] Position could not be set, no block within range.");
+							return true;
+						}
+					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("wposone") || argument.equalsIgnoreCase("wpo") || argument.equalsIgnoreCase("wp1")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("wposone") || argument.equalsIgnoreCase("wpo") || argument.equalsIgnoreCase("wp1")) {//editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
-						config.setArenaPos(3, a.getName(), a.getWaitingRegion().getPos1());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position one set.");
-						return true;
-					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+						if(!((Player) sender).getTargetBlock(null, 10).isEmpty()) {
+							a.getWaitingRegion().setPos1(((Player) sender).getTargetBlock(null, 10));
+							config.setArenaPos(3, a.getName(), a.getWaitingRegion().getPos1());
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position one set.");
+							return true;
+						}
+						else {
+							((Player) sender).sendMessage(ChatColor.GRAY + "[Coliseum] Position could not be set, no block within range.");
+							return true;
+						}
+					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("postwo") || argument.equalsIgnoreCase("pt") || argument.equalsIgnoreCase("p2")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("postwo") || argument.equalsIgnoreCase("pt") || argument.equalsIgnoreCase("p2")) {//editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
-						config.setArenaPos(2, a.getName(), a.getRegion().getPos2());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position two set.");
-						return true;
-					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+						if(!((Player) sender).getTargetBlock(null, 10).isEmpty()) {
+							a.getRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+							config.setArenaPos(2, a.getName(), a.getRegion().getPos2());
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Position two set.");
+							return true;
+						}
+						else {
+							((Player) sender).sendMessage(ChatColor.GRAY + "[Coliseum] Position could not be set, no block within range.");
+							return true;
+						}
+					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("wpostwo") || argument.equalsIgnoreCase("wpt") || argument.equalsIgnoreCase("wp2")) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("wpostwo") || argument.equalsIgnoreCase("wpt") || argument.equalsIgnoreCase("wp2")) {//editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
-						a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
-						config.setArenaPos(4, a.getName(), a.getWaitingRegion().getPos2());
-						sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position two set.");
-						return true;
-					}//TODO Check if block is null (looking too far away), do later in interest of getting this done.
+						if(!((Player) sender).getTargetBlock(null, 10).isEmpty()) {
+							a.getWaitingRegion().setPos2(((Player) sender).getTargetBlock(null, 10));
+							config.setArenaPos(4, a.getName(), a.getWaitingRegion().getPos2());
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Waiting region position two set.");
+							return true;
+						}
+						else {
+							((Player) sender).sendMessage(ChatColor.GRAY + "[Coliseum] Position could not be set, no block within range.");
+							return true;
+						}
+					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {//TODO editor permissions
+			else if(argument.equalsIgnoreCase("spawn") && args.length >= 2) {//editor permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isPlayerEditing((Player) sender)) {
 						StringBuilder sb = new StringBuilder();
@@ -176,7 +207,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							}
 						}
 						else {
-							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {//TODO if containsKey is case sensitive need new way to match arena names
+							if(a.getTeams().containsKey(sb.toString().toLowerCase())) {
 								if(a.getRegion().addTeamSpawn(sb.toString().toLowerCase(), ((Player) sender).getLocation())) {
 									config.setSpawn(a.getName(), sb.toString().toLowerCase(), a.getRegion().getTeamSpawn(sb.toString().toLowerCase()));
 									sender.sendMessage(ChatColor.GRAY + "[Coliseum] Team " + sb.toString().toLowerCase() + " spawn was created.");
@@ -194,6 +225,8 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
 			else if(argument.equalsIgnoreCase("addteam") && args.length >= 2) {
 				StringBuilder sb = new StringBuilder();
@@ -211,6 +244,8 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
 			else if(argument.equalsIgnoreCase("remteam") && args.length >= 2) {
 				StringBuilder sb = new StringBuilder();
@@ -234,8 +269,10 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not editing an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//TODO Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
+			else if(argument.equalsIgnoreCase("enable") && args.length >= 2) {//Admin (and/or editor) [multiple permissions? admin can boot, editor can't?]
 				StringBuilder sb = new StringBuilder();
 				for(int i = 1; i <= (args.length - 1); i++) {
 					if(i + 1 == args.length) {
@@ -282,8 +319,12 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 
 			}
-			else if(argument.equalsIgnoreCase("join") && !plugin.isPlayerJoined(((Player) sender).getName()) && args.length >= 2) {//TODO player permissions
-				for(Arena a : plugin.getArenaSet()) {
+			else if(argument.equalsIgnoreCase("join") && args.length >= 2) {//player permissions
+				if(plugin.isPlayerJoined(((Player) sender).getName())) {
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're already in an arena.");
+					return true;
+				}
+				for(Arena a : plugin.getArenaSet()) {//TODO
 					if(a.isPlayerEditing((Player) sender)) {
 						sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're still editing something. Quit editing and try to join again.");
 						return true;
@@ -315,16 +356,16 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena was found by that name.");
 				return true;
 			}
-			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName())) {//TODO player permissions
+			else if(argument.equalsIgnoreCase("leave") && plugin.isPlayerJoined(((Player) sender).getName())) {//player permissions
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removeCombatant(((Player) sender));
 						sender.sendMessage(ChatColor.GRAY + "Arena left.");
 						return true;
 					}
-					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
-					return true;
 				}
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
+				return true;
 			}
 			else if(argument.equalsIgnoreCase("team")) {
 				if(args.length >= 2) {
@@ -349,6 +390,8 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							}
 						}
 					}
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
+					return true;
 				}
 				else {
 					for(Arena a : plugin.getArenaSet()) {
@@ -361,9 +404,11 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 							sender.sendMessage(ChatColor.GRAY + sb.replace(sb.length() - 2, sb.length(), ".").toString());
 						}
 					}
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
+					return true;
 				}
 			}
-			else if(argument.equalsIgnoreCase("ready")) {//TODO fix me (fixed?)
+			else if(argument.equalsIgnoreCase("ready")) {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer((Player) sender)) {
 						Combatant c = a.getCombatant((Player) sender);
@@ -377,9 +422,10 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 				}
-				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You are not in an arena.");
+				sender.sendMessage(ChatColor.GRAY + "[Coliseum] You're not in an arena.");
+				return true;
 			}
-			else if(argument.equalsIgnoreCase("forcestart")) {//TODO make me better!
+			else if(argument.equalsIgnoreCase("forcestart")) {
 				if(args.length > 2) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 1; i <= (args.length - 1); i++) {
@@ -398,6 +444,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena by the name of " + sb.toString() + " was found.");
+					return true;
 				}
 				else {
 					for(Arena a : plugin.getArenaSet()) {
