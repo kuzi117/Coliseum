@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockListener implements Listener {
 
@@ -30,6 +31,20 @@ public class BlockListener implements Listener {
 				breaker.sendMessage(ChatColor.GRAY + "[Coliseum] This block was not allowed to be broken.");
 			}
 		}
+	}
+	
+	@EventHandler
+	public void handleBlockPlace(BlockPlaceEvent e) {
+		Player breaker = e.getPlayer();
+		Block block = e.getBlock();
 		
+		for(Arena a: plugin.getArenaSet()) {
+			if(a.hasThisPlayer(breaker) || 
+					(a.getRegion().isBlockContained(block.getLocation()) && a.isEnabled()/* && player has a permission*/) || 
+					(a.getWaitingRegion().isBlockContained(block.getLocation()) && a.isEnabled())/* && player has a permission*/) {
+				e.setCancelled(true);
+				breaker.sendMessage(ChatColor.GRAY + "[Coliseum] This block was not allowed to be placed.");
+			}
+		}
 	}
 }
