@@ -8,7 +8,9 @@ import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
 import org.SkyCraft.Coliseum.Arena.Combatant.PVPCombatant;
 import org.SkyCraft.Coliseum.Arena.Region.PVPRegion;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class PVPArena extends Arena {
 	private Set<PVPCombatant> combatants;
@@ -78,14 +80,14 @@ public class PVPArena extends Arena {
 		}
 		return super.enable();
 	}
-	
+
 	public boolean disable() {
 		if(!combatants.isEmpty()) {
 			for(PVPCombatant c : combatants) {
 				c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] This arena was disabled.");
 			}
 		}
-		end();
+		forceEnd();
 		return super.disable();
 	}
 
@@ -93,7 +95,9 @@ public class PVPArena extends Arena {
 		winners = null;
 		if(enabled) {
 			for(PVPCombatant c : combatants) {
-				if(!c.isReady() || !teams.containsKey(c.getTeam())) {
+				if(!c.isReady() || !teams.containsKey(c.getTeam())) {//TODO Remove debug info
+					if(plugin.getServer().getPlayer("Braaedy") != null)
+						plugin.getServer().getPlayer("Braaedy").sendMessage(c.getPlayer().getName() + " is not ready or else it's " +  !teams.containsKey(c.getTeam()) + " [DEBUG INFO]");
 					return false;
 				}
 			}
@@ -104,27 +108,36 @@ public class PVPArena extends Arena {
 		for(PVPCombatant c : combatants) {
 			if(!c.isOldCombatant()) {
 				c.toTeamSpawn(arenaRegion);
+				c.getPlayer().getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+				c.getPlayer().getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+				c.getPlayer().getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+				c.getPlayer().getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+				c.getPlayer().getInventory().setItemInHand(new ItemStack(Material.DIAMOND_SWORD));
 			}
 		}
 		return started = true;
 	}
-	
+
 	public boolean forceStart() {//TODO Should work.
+		Set<PVPCombatant> remove = new HashSet<PVPCombatant>();
 		for(PVPCombatant c : combatants) {
 			if(!c.isReady()) {
-				removeCombatant(c);
+				c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] You were kicked when the arena was forced to start because you were not ready.");
+				remove.add(c);
 			}
+		}
+		for(PVPCombatant c : remove) {
+			removeCombatant(c);
 		}
 		return start();
 	}
 
-	public void end() {
+	public boolean end() {
 		started = false;
 		Set<PVPCombatant> retain = new HashSet<PVPCombatant>();
 		for(PVPCombatant c : combatants) {
 			if(!isPlayerDead(c.getPlayer().getName())) {
-				c.toOldLoc();
-				plugin.leavePlayer(c.getPlayer().getName());
+				removeCombatant(c);
 			}
 			else {
 				c.setOldCombatant(true);
@@ -142,7 +155,14 @@ public class PVPArena extends Arena {
 		for(String team : teams.keySet()) {
 			teams.put(team, 0);
 		}
-		return;
+		return true;
+	}
+
+	public boolean forceEnd() {
+		for(PVPCombatant c : combatants) {
+			c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] This arena was forced to end.");
+		}
+		return end();
 	}
 
 	public void broadcastKill(Player dead, Player killer) {
@@ -181,6 +201,13 @@ public class PVPArena extends Arena {
 			}
 		}
 		dead.sendMessage(ChatColor.GRAY + "[Coliseum] You committed suicide!");
+		return;
+	}
+
+	public void broadcastLeave(Player leaver) {
+		for(PVPCombatant c : combatants) {
+			c.getPlayer().sendMessage(ChatColor.RED + leaver.getName() + ChatColor.GRAY + " has left the match.");
+		}
 		return;
 	}
 }
