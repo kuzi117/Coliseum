@@ -342,13 +342,17 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.isThisArena(sb.toString())) {
-						if(a.isEnabled()) {
-							a.addCombatant(((Player) sender));
-							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
+						if(a.isStarted()) {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] This arena is already running.");
+							return true;
+						}
+						else if(!a.isEnabled()) {
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was not enabled.");
 							return true;
 						}
 						else {
-							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena was not enabled.");
+							a.addCombatant(((Player) sender));
+							sender.sendMessage(ChatColor.GRAY + "[Coliseum] Welcome to " + a.getName() + "!");
 							return true;
 						}
 					}
@@ -439,10 +443,14 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 					for(Arena a : plugin.getArenaSet()) {
 						if(a.isThisArena(sb.toString().toLowerCase())) {
-							if(a.forceStart()) {
-								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was successfully forced to start.");
+							if(a.isStarted()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was already started.");
+								return true;
 							}
-							return true;
+							else if(a.forceStart()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was successfully forced to start.");
+								return true;
+							}
 						}
 					}
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena by the name of " + sb.toString() + " was found.");
@@ -453,6 +461,42 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						if(a.hasThisPlayer((Player) sender)) {
 							if(a.forceStart()) {
 								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + a.getName() + " was successfully forced to start.");
+							}
+							return true;
+						}
+					}
+				}
+			}
+			else if(argument.equalsIgnoreCase("forcend")) {
+				if(args.length > 2) {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i <= (args.length - 1); i++) {
+						if(i + 1 == args.length) {
+							sb.append(args[i]);
+							break;
+						}
+						sb.append(args[i] + " ");
+					}
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.isThisArena(sb.toString().toLowerCase())) {
+							if(!a.isStarted()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was not running.");
+								return true;
+							}
+							else if(a.forceEnd()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + sb.toString() + " was successfully forced to end.");
+								return true;
+							}
+						}
+					}
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] No arena by the name of " + sb.toString() + " was found.");
+					return true;
+				}
+				else {
+					for(Arena a : plugin.getArenaSet()) {
+						if(a.hasThisPlayer((Player) sender)) {
+							if(a.forceEnd()) {
+								sender.sendMessage(ChatColor.GRAY + "[Coliseum] Arena " + a.getName() + " was successfully forced to end.");
 							}
 							return true;
 						}
