@@ -19,7 +19,7 @@ public abstract class Arena {
 	private String arenaName;
 	protected boolean enabled;
 	protected boolean started;
-	private int maxPoints = 3; //TODO CHANGE
+	private int maxPoints = 6; //TODO CHANGE
 	private Set<String> deadPlayers;
 	protected String winners;
 	
@@ -177,8 +177,12 @@ public abstract class Arena {
 	
 	public abstract boolean forceStart();
 	
-	public abstract void end();
+	public abstract boolean end();
+
+	public abstract boolean forceEnd();
 
 	public abstract void broadcastScore();
+	
+	public abstract void broadcastLeave(Player leaver);
 	
 }
