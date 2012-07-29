@@ -360,6 +360,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				for(Arena a : plugin.getArenaSet()) {
 					if(a.hasThisPlayer(((Player) sender))) {
 						a.removeCombatant(((Player) sender));
+						a.broadcastLeave((Player) sender);
 						sender.sendMessage(ChatColor.GRAY + "Arena left.");
 						return true;
 					}
