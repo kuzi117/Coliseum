@@ -99,7 +99,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void handleRespawn(PlayerRespawnEvent e) {
 		Player p = e.getPlayer();
 		for(Arena a : plugin.getArenaSet()) {
@@ -131,6 +131,7 @@ public class PlayerListener implements Listener {
 		for(Arena a : plugin.getArenaSet()) {
 			if(a.hasThisPlayer(leaver)) {
 				a.removeCombatant(leaver);
+				a.broadcastLeave(leaver);
 			}
 		}
 	}
