@@ -467,7 +467,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 					}
 				}
 			}
-			else if(argument.equalsIgnoreCase("forcend")) {
+			else if(argument.equalsIgnoreCase("forceend")) {
 				if(args.length > 2) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 1; i <= (args.length - 1); i++) {
