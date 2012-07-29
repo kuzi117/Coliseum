@@ -4,6 +4,7 @@ import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
 import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -14,13 +15,15 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
-public class DeathListener implements Listener {
+public class PlayerListener implements Listener {
 
 	private ColiseumPlugin plugin;
 
-	public DeathListener(ColiseumPlugin plugin) {
+	public PlayerListener(ColiseumPlugin plugin) {
 		this.plugin = plugin;
 	}
 	//TODO up priority
@@ -101,8 +104,13 @@ public class DeathListener implements Listener {
 		for(Arena a : plugin.getArenaSet()) {
 			if(a.hasThisPlayer(p) && a.isPlayerDead(p.getName())) {
 				Combatant c = a.getCombatant(p);
-				if(!c.isOldCombatant()) {
+				if(!c.isOldCombatant()) {//TODO Remove inventory stuff
 					e.setRespawnLocation(a.getRegion().getTeamSpawn(c.getTeam()));
+					p.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+					p.getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+					p.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+					p.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+					p.getInventory().setItemInHand(new ItemStack(Material.DIAMOND_SWORD));
 					return;
 				}
 				else {
@@ -111,6 +119,17 @@ public class DeathListener implements Listener {
 					a.removeOldCombatant(p);
 					return;
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void handleLogout(PlayerQuitEvent e) {
+		Player leaver = e.getPlayer();
+		
+		for(Arena a : plugin.getArenaSet()) {
+			if(a.hasThisPlayer(leaver)) {
+				a.removeCombatant(leaver);
 			}
 		}
 	}
