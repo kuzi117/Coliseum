@@ -37,7 +37,7 @@ public class ConfigHandler {
 	}
 
 	private void loadPluginConfig() {
-		plugin.getPlayerListener().setHandleDamage(config.getBoolean("handle-ignored-damage"));
+		plugin.getPlayerListener().setHandleIgnoredDamage(config.getBoolean("handle-ignored-damage"));
 		return;
 	}
 
