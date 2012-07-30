@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Listeners.BlockListener;
-import org.SkyCraft.Coliseum.Listeners.DamageListener;
 import org.SkyCraft.Coliseum.Listeners.PlayerListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,7 +17,6 @@ public class ColiseumPlugin extends JavaPlugin {
 	private ConfigHandler confHandler;
 	private ColiseumCommandExecutor executor;
 	private PlayerListener pListener;
-	private DamageListener daListener;
 	private BlockListener bListener;
 	//TODO Need logout listener to remove and move player on logout
 	
@@ -28,10 +26,8 @@ public class ColiseumPlugin extends JavaPlugin {
 		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
 		confHandler.loadArenas();
 		pListener = new PlayerListener(this);
-		daListener = new DamageListener(this);
 		bListener = new BlockListener(this);
 		getServer().getPluginManager().registerEvents(pListener, this);
-		getServer().getPluginManager().registerEvents(daListener, this);
 		getServer().getPluginManager().registerEvents(bListener, this);
 	}
 	
@@ -55,6 +51,10 @@ public class ColiseumPlugin extends JavaPlugin {
 
 	public ConfigHandler getConfigHandler() {
 		return confHandler;
+	}
+	
+	public PlayerListener getPlayerListener() {
+		return pListener;
 	}
 
 }
