@@ -30,8 +30,15 @@ public class ConfigHandler {
 			plugin.saveDefaultConfig();
 		}
 		this.config = plugin.getConfig();
+		
+		loadPluginConfig();
 
 		loadArenasConfig();
+	}
+
+	private void loadPluginConfig() {
+		plugin.getPlayerListener().setHandleDamage(config.getBoolean("handle-ignored-damage"));
+		return;
 	}
 
 	private void loadArenasConfig() {

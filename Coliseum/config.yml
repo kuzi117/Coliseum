@@ -1,0 +1,2 @@
+#Useful for plugins like Factions that don't allow faction mates to hurt each other.
+handle-ignored-damage: false
