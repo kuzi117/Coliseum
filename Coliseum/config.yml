@@ -1,2 +1,4 @@
+#For when you don't need to know about the state of arenas on startup
+send-startup-messages: true
 #Useful for plugins like Factions that don't allow faction mates to hurt each other.
 handle-ignored-damage: false
