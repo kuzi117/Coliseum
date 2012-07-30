@@ -18,7 +18,6 @@ public class ColiseumPlugin extends JavaPlugin {
 	private ColiseumCommandExecutor executor;
 	private PlayerListener pListener;
 	private BlockListener bListener;
-	//TODO Need logout listener to remove and move player on logout
 	
 	public void onEnable() {
 		pListener = new PlayerListener(this);
