@@ -8,7 +8,9 @@ import java.util.logging.Logger;
 
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +22,7 @@ public class ConfigHandler {
 	private Logger log;
 	private FileConfiguration config;
 	private YamlConfiguration arenas;
+	private boolean sendStartupMessages;
 
 	public ConfigHandler(ColiseumPlugin plugin, Logger log) {
 		this.plugin = plugin;
@@ -37,6 +40,7 @@ public class ConfigHandler {
 
 	private void loadPluginConfig() {
 		plugin.getPlayerListener().setHandleIgnoredDamage(config.getBoolean("handle-ignored-damage"));
+		sendStartupMessages = config.getBoolean("send-startup-messages");
 		return;
 	}
 
@@ -117,7 +121,10 @@ public class ConfigHandler {
 	}
 
 	public void loadArenas() {
+		ConsoleCommandSender console = plugin.getServer().getConsoleSender();
 		Set<String> arenaNames = arenas.getValues(false).keySet();
+		int loaded = 0;
+		int enabled = 0;
 
 		for(String name : arenaNames) {
 			Arena a = null;
@@ -129,63 +136,78 @@ public class ConfigHandler {
 					plugin.getArenaSet().add(a);
 				}
 				else {
+					if(sendStartupMessages) {
+						console.sendMessage("[Coliseum] Arena " + ChatColor.RED + name + ChatColor.GRAY + " was not loaded, had unsupported arena type " + ChatColor.RED + type + ChatColor.GRAY + ".");
+						console.sendMessage("[Coliseum] Arena " + "Supported arena types are: " + ChatColor.GOLD + "pvp.");
+					}
 					continue;
 				}
 			}
 			else {
+				if(sendStartupMessages) {
+					console.sendMessage("[Coliseum] Arena " + ChatColor.RED + name + ChatColor.GRAY + " was unsuccessfully loaded, was missing arena type.");
+				}
 				continue;
+			}//TODO Add world support.
+			if(sec.contains("pos1") && sec.contains("pos1.x") && sec.contains("pos1.y") && sec.contains("pos1.z")) {
+				a.getRegion().setPos1(sec.getInt("pos1.x"), sec.getInt("pos1.y"), sec.getInt("pos1.z"));
 			}
-			if(sec.contains("pos1")) {//TODO Add check if contains x, y, z
-				if (sec.contains("pos1.x") && sec.contains("pos1.y") && sec.contains("pos1.z")) {
-					a.getRegion().setPos1(sec.getInt("pos1.x"), sec.getInt("pos1.y"), sec.getInt("pos1.z"));
-				}
+			if(sec.contains("pos2") && sec.contains("pos2.x") && sec.contains("pos2.y") && sec.contains("pos2.z")) {
+				a.getRegion().setPos2(sec.getInt("pos2.x"), sec.getInt("pos2.y"), sec.getInt("pos2.z"));
 			}
-			if(sec.contains("pos2")) {
-				if (sec.contains("pos2.x") && sec.contains("pos2.y") && sec.contains("pos2.z")) {
-					a.getRegion().setPos2(sec.getInt("pos2.x"), sec.getInt("pos2.y"), sec.getInt("pos2.z"));
-				}
+			if(sec.contains("wpos1") && sec.contains("wpos1.x") && sec.contains("wpos1.y") && sec.contains("wpos1.z")) {
+				a.getWaitingRegion().setPos1(sec.getInt("wpos1.x"), sec.getInt("wpos1.y"), sec.getInt("wpos1.z"));
 			}
-			if(sec.contains("wpos1")) {
-				if (sec.contains("wpos1.x") && sec.contains("wpos1.y") && sec.contains("wpos1.z")) {
-					a.getWaitingRegion().setPos1(sec.getInt("wpos1.x"), sec.getInt("wpos1.y"), sec.getInt("wpos1.z"));
-				}
-			}
-			if(sec.contains("wpos2")) {
-				if (sec.contains("wpos2.x") && sec.contains("wpos2.y") && sec.contains("wpos2.z")) {
-					a.getWaitingRegion().setPos2(sec.getInt("wpos2.x"), sec.getInt("wpos2.y"), sec.getInt("wpos2.z"));
-				}
+			if(sec.contains("wpos2") && sec.contains("wpos2.x") && sec.contains("wpos2.y") && sec.contains("wpos2.z")) {
+				a.getWaitingRegion().setPos2(sec.getInt("wpos2.x"), sec.getInt("wpos2.y"), sec.getInt("wpos2.z"));
 			}
 			if(sec.contains("spawns")) {
 				ConfigurationSection sec2 =  sec.getConfigurationSection("spawns");
 				Set<String> teamNames = sec2.getValues(false).keySet();
 				for(String teamName : teamNames) {
 					if(teamName.equalsIgnoreCase("waitingareaspawn")) {
-						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".y")) {
+						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".yaw")  && sec2.contains(teamName + ".pitch") && sec2.contains(teamName + ".world")) {
 							a.getWaitingRegion().setSpawn(new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"), 
 									sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z"), (float) sec2.getDouble(teamName + ".yaw"), (float) sec2.getDouble(teamName + ".pitch")));
 						}
 					}
 					else {
 						a.addTeamName(teamName);
-						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".y")) {
+						if(sec2.contains(teamName + ".x") && sec2.contains(teamName + ".y") && sec2.contains(teamName + ".z") && sec2.contains(teamName + ".yaw") && sec2.contains(teamName + ".pitch") && sec2.contains(teamName + ".world")) {
 							a.getRegion().addTeamSpawn(teamName, new Location(plugin.getServer().getWorld(sec2.getString(teamName + ".world")), sec2.getDouble(teamName + ".x"),
 									sec2.getDouble(teamName + ".y"), sec2.getDouble(teamName + ".z"), (float) sec2.getDouble(teamName + ".yaw"), (float) sec2.getDouble(teamName + ".pitch")));
 						}
 					}
 				}
 			}
-			if(sec.contains("enabled")) {
-				if(sec.getBoolean("enabled")) {
-					if(!a.enable()) {
-						sec.set("enabled", false);
+			if(sec.contains("enabled") && sec.getBoolean("enabled")) {
+				if(!a.enable()) {
+					sec.set("enabled", false);
+					if(sendStartupMessages) {
+						console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but was disabled.");
 					}
+					loaded++;
+				}
+				else {
+					if(sendStartupMessages) {
+						console.sendMessage("[Coliseum] Loaded " + ChatColor.GREEN + a.getName() + ChatColor.GRAY + " successfully and was enabled.");
+					}
+					loaded++;
+					enabled++;
 				}
 			}
 			else {
 				sec.set("enabled", false);
+				if(sendStartupMessages) {
+					console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but was disabled.");
+				}
+				loaded++;
 			}
 		}
-
+		if(sendStartupMessages) {
+			console.sendMessage("[Coliseum] " + ChatColor.GREEN + String.valueOf(loaded) + "/" + arenaNames.size() + ChatColor.GRAY + " arenas were loaded.");
+			console.sendMessage("[Coliseum] " + ChatColor.GREEN + String.valueOf(enabled) + "/" + arenaNames.size() + ChatColor.GRAY + " arenas were enabled.");
+		}
 	}
 
 }
