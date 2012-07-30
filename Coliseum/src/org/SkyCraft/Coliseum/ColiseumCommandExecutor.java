@@ -432,7 +432,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			else if(argument.equalsIgnoreCase("forcestart")) {
-				if(args.length > 2) {
+				if(args.length >= 2) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 1; i <= (args.length - 1); i++) {
 						if(i + 1 == args.length) {
@@ -468,7 +468,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 				}
 			}
 			else if(argument.equalsIgnoreCase("forceend")) {
-				if(args.length > 2) {
+				if(args.length >= 2) {
 					StringBuilder sb = new StringBuilder();
 					for(int i = 1; i <= (args.length - 1); i++) {
 						if(i + 1 == args.length) {
