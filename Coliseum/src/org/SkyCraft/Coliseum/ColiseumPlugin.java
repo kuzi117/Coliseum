@@ -21,14 +21,15 @@ public class ColiseumPlugin extends JavaPlugin {
 	//TODO Need logout listener to remove and move player on logout
 	
 	public void onEnable() {
-		log = getLogger();
-		confHandler = new ConfigHandler(this, log);
-		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
-		confHandler.loadArenas();
 		pListener = new PlayerListener(this);
 		bListener = new BlockListener(this);
 		getServer().getPluginManager().registerEvents(pListener, this);
 		getServer().getPluginManager().registerEvents(bListener, this);
+		
+		log = getLogger();
+		confHandler = new ConfigHandler(this, log);
+		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
+		confHandler.loadArenas();
 	}
 	
 	public Set<Arena> getArenaSet() {
