@@ -107,6 +107,7 @@ public class PlayerListener implements Listener {
 				Combatant c = a.getCombatant(p);
 				if(!c.isOldCombatant()) {//TODO Remove inventory stuff
 					e.setRespawnLocation(a.getRegion().getTeamSpawn(c.getTeam()));
+					a.setPlayerLive(p.getName());
 					p.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
 					p.getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
 					p.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
