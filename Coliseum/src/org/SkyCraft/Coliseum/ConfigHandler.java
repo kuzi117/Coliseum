@@ -32,7 +32,6 @@ public class ConfigHandler {
 		this.config = plugin.getConfig();
 		
 		loadPluginConfig();
-
 		loadArenasConfig();
 	}
 
