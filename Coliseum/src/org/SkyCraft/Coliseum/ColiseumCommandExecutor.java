@@ -47,9 +47,9 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 						sb.append(args[i] + " ");
 					}
-					PVPArena a = new PVPArena(sb.toString(), plugin);
+					PVPArena a = new PVPArena(sb.toString().toLowerCase(), plugin);
 					plugin.getArenaSet().add(a);
-					config.createArena(sb.toString(), "pvp");
+					config.createArena(sb.toString().toLowerCase(), "pvp");
 					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Created a new PVP arena called " + sb.toString() + ".");
 					for(Arena a2 : plugin.getArenaSet()) {
 						if(a2.isPlayerEditing((Player) sender)) {
@@ -59,7 +59,7 @@ public class ColiseumCommandExecutor implements CommandExecutor {
 						}
 					}
 					a.setPlayerEditing((Player) sender);
-					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Now editing " + sb.toString() + ".");
+					sender.sendMessage(ChatColor.GRAY + "[Coliseum] Now editing " + sb.toString().toLowerCase() + ".");
 					return true;
 				}
 				else {
