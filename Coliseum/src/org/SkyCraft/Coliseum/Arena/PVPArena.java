@@ -55,8 +55,11 @@ public class PVPArena extends Arena {
 
 	public void removeCombatant(Combatant combatant) {
 		plugin.leavePlayer(combatant.getPlayer().getName());
-		combatants.remove(combatant);
+		combatant.getPlayer().getInventory().clear();
+		ItemStack air = new ItemStack(Material.AIR);//TODO REMOVE TEMP FIX
+		combatant.getPlayer().getInventory().setArmorContents(new ItemStack[] {air, air, air, air});//TODO REMOVE TEMP FIX
 		combatant.toOldLoc();
+		combatants.remove(combatant);
 		return;
 	}
 
@@ -95,9 +98,7 @@ public class PVPArena extends Arena {
 		winners = null;
 		if(enabled) {
 			for(PVPCombatant c : combatants) {
-				if(!c.isReady() || !teams.containsKey(c.getTeam())) {//TODO Remove debug info
-					if(plugin.getServer().getPlayer("Braaedy") != null)
-						plugin.getServer().getPlayer("Braaedy").sendMessage(c.getPlayer().getName() + " is not ready or else it's " +  !teams.containsKey(c.getTeam()) + " [DEBUG INFO]");
+				if(!c.isReady() || !teams.containsKey(c.getTeam())) {
 					return false;
 				}
 			}
@@ -134,24 +135,25 @@ public class PVPArena extends Arena {
 
 	public boolean end() {
 		started = false;
-		Set<PVPCombatant> retain = new HashSet<PVPCombatant>();
+		findWinningTeam();
+		Set<PVPCombatant> remove = new HashSet<PVPCombatant>();
 		for(PVPCombatant c : combatants) {
 			if(!isPlayerDead(c.getPlayer().getName())) {
-				removeCombatant(c);
+				remove.add(c);
 			}
 			else {
 				c.setOldCombatant(true);
-				retain.add(c);
 			}
-			Player p = c.getPlayer();
-			if(findWinningTeam().equalsIgnoreCase(c.getTeam())) {
-				p.sendMessage(ChatColor.GRAY + "[Coliseum] Congrats on winning!");
+			if(winners.equalsIgnoreCase(c.getTeam())) {
+				c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] Congrats on winning!");
 			}
 			else {
-				p.sendMessage(ChatColor.GRAY + "[Coliseum] Sorry about the loss, better luck next time!");
+				c.getPlayer().sendMessage(ChatColor.GRAY + "[Coliseum] Sorry about the loss, better luck next time!");
 			}
 		}
-		combatants.retainAll(retain);
+		for(PVPCombatant c : remove) {
+			removeCombatant(c);
+		}
 		for(String team : teams.keySet()) {
 			teams.put(team, 0);
 		}
