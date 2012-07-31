@@ -4,6 +4,7 @@ import org.SkyCraft.Coliseum.ColiseumPlugin;
 import org.SkyCraft.Coliseum.Arena.Arena;
 import org.SkyCraft.Coliseum.Arena.PVPArena;
 import org.SkyCraft.Coliseum.Arena.Combatant.Combatant;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerListener implements Listener {
 
 	private ColiseumPlugin plugin;
+	private boolean handleIgnoredDamage;
 
 	public PlayerListener(ColiseumPlugin plugin) {
 		this.plugin = plugin;
@@ -123,6 +125,44 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void handleDamage(EntityDamageByEntityEvent e) {
+		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			Player damager = (Player) e.getDamager();
+			Player damagee = (Player) e.getEntity();
+			for(Arena a : plugin.getArenaSet()) {
+				if(a.hasThisPlayer(damager) && !a.hasThisPlayer(damagee)) {
+					e.setCancelled(true);
+					return;
+				}
+				else if(!a.hasThisPlayer(damager) && a.hasThisPlayer(damagee)) {
+					e.setCancelled(true);
+					return;
+				}
+				else if(a.hasThisPlayer(damager) && a.hasThisPlayer(damagee)) {
+					if(!a.isStarted()) {
+						e.setCancelled(true);
+						return;
+					}
+					else if(a.getCombatant(damager).getTeam().equalsIgnoreCase(a.getCombatant(damagee).getTeam())) {
+						e.setCancelled(true);
+						return;
+					}
+					else if(!a.getCombatant(damager).getTeam().equalsIgnoreCase(a.getCombatant(damagee).getTeam()) &&
+							e.isCancelled() && handleIgnoredDamage) {
+						plugin.getServer().getPlayer("Braaedy").sendMessage(ChatColor.RED + "[DEBUG] " + ChatColor.BLACK + "Damage was canceled between " + damager.getName() + " and " + damagee.getName());
+						e.setCancelled(false);
+					}
+				}
+			}
+		}
+	}
+	
+	public void setHandleIgnoredDamage(boolean handleIgnoredDamage) {
+		this.handleIgnoredDamage = handleIgnoredDamage;
+		return;
 	}
 	
 	@EventHandler
