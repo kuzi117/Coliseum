@@ -15,7 +15,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.Vector;
 
 public class ConfigHandler {
 	private ColiseumPlugin plugin;
@@ -80,16 +79,18 @@ public class ConfigHandler {
 		return;
 	}
 
-	public void setArenaPos(int posNum, String arenaName, Vector vec) {
-		if(posNum <=2) {
-			arenas.set(arenaName + ".pos" + posNum + ".x", vec.getBlockX());
-			arenas.set(arenaName + ".pos" + posNum + ".y", vec.getBlockY());
-			arenas.set(arenaName + ".pos" + posNum + ".z", vec.getBlockZ());
+	public void setArenaPos(int posNum, String arenaName, Location loc) {
+		if(posNum <= 2) {
+			arenas.set(arenaName + ".pos" + posNum + ".x", loc.getBlockX());
+			arenas.set(arenaName + ".pos" + posNum + ".y", loc.getBlockY());
+			arenas.set(arenaName + ".pos" + posNum + ".z", loc.getBlockZ());
+			arenas.set(arenaName + ".pos" + posNum + ".world", loc.getWorld());
 		}
 		else if(posNum > 2) {
-			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".x", vec.getBlockX());
-			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".y", vec.getBlockY());
-			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".z", vec.getBlockZ());
+			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".x", loc.getBlockX());
+			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".y", loc.getBlockY());
+			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".z", loc.getBlockZ());
+			arenas.set(arenaName + ".wpos" + (posNum - 2) + ".world", loc.getWorld());
 		}
 		saveArenas();
 		return;
@@ -148,18 +149,18 @@ public class ConfigHandler {
 					console.sendMessage("[Coliseum] Arena " + ChatColor.RED + name + ChatColor.GRAY + " was unsuccessfully loaded, was missing arena type.");
 				}
 				continue;
-			}//TODO Add world support.
+			}
 			if(sec.contains("pos1") && sec.contains("pos1.x") && sec.contains("pos1.y") && sec.contains("pos1.z")) {
-				a.getRegion().setPos1(sec.getInt("pos1.x"), sec.getInt("pos1.y"), sec.getInt("pos1.z"));
+				a.getRegion().setPos1(sec.getInt("pos1.x"), sec.getInt("pos1.y"), sec.getInt("pos1.z"), plugin.getServer().getWorld(sec.getString("pos1.world")));
 			}
 			if(sec.contains("pos2") && sec.contains("pos2.x") && sec.contains("pos2.y") && sec.contains("pos2.z")) {
-				a.getRegion().setPos2(sec.getInt("pos2.x"), sec.getInt("pos2.y"), sec.getInt("pos2.z"));
+				a.getRegion().setPos2(sec.getInt("pos2.x"), sec.getInt("pos2.y"), sec.getInt("pos2.z"), plugin.getServer().getWorld(sec.getString("pos2.world")));
 			}
 			if(sec.contains("wpos1") && sec.contains("wpos1.x") && sec.contains("wpos1.y") && sec.contains("wpos1.z")) {
-				a.getWaitingRegion().setPos1(sec.getInt("wpos1.x"), sec.getInt("wpos1.y"), sec.getInt("wpos1.z"));
+				a.getWaitingRegion().setPos1(sec.getInt("wpos1.x"), sec.getInt("wpos1.y"), sec.getInt("wpos1.z"), plugin.getServer().getWorld(sec.getString("wpos1.world")));
 			}
 			if(sec.contains("wpos2") && sec.contains("wpos2.x") && sec.contains("wpos2.y") && sec.contains("wpos2.z")) {
-				a.getWaitingRegion().setPos2(sec.getInt("wpos2.x"), sec.getInt("wpos2.y"), sec.getInt("wpos2.z"));
+				a.getWaitingRegion().setPos2(sec.getInt("wpos2.x"), sec.getInt("wpos2.y"), sec.getInt("wpos2.z"), plugin.getServer().getWorld(sec.getString("wpos2.world")));
 			}
 			if(sec.contains("spawns")) {
 				ConfigurationSection sec2 =  sec.getConfigurationSection("spawns");

@@ -1,64 +1,86 @@
 package org.SkyCraft.Coliseum.Arena.Region;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.util.Vector;
 
 public abstract class Region {
 
-	private Vector pos1;
-	private Vector pos2;
+	private Location loc1;
+	private Location loc2;
 	
 	//TODO implement checks to ensure no "flat" regions
-
-	Region() {
-		pos1 = new Vector();
-		pos2 = new Vector();
-	}
+	
+	Region() {}
 	
 	public void setPos1(Block block) {
-		pos1.setX(block.getX());
-		pos1.setY(block.getY());
-		pos1.setZ(block.getZ());
+		if(loc1 == null) {
+			loc1 = new Location(block.getWorld(), block.getX(), block.getY(), block.getZ());
+		}
+		else {
+			loc1.setX(block.getX());
+			loc1.setY(block.getY());
+			loc1.setZ(block.getZ());
+			loc1.setWorld(block.getWorld());
+		}
 	}
 
-	public void setPos1(int x, int y, int z) {
-		pos1.setX(x);
-		pos1.setY(y);
-		pos1.setZ(z);
+	public void setPos1(double x, double y, double z, World world) {
+		if(loc1 == null) {
+			loc1 = new Location(world, x, y, z);
+		}
+		else {
+			loc1.setX(x);
+			loc1.setY(y);
+			loc1.setZ(z);
+			loc1.setWorld(world);
+		}
 	}
 	
 	public void setPos2(Block block) {
-		pos2.setX(block.getX());
-		pos2.setY(block.getY());
-		pos2.setZ(block.getZ());
+		if(loc2 == null) {
+			loc2 = new Location(block.getWorld(), block.getX(), block.getY(), block.getZ());
+		}
+		else {
+			loc2.setX(block.getX());
+			loc2.setY(block.getY());
+			loc2.setZ(block.getZ());
+			loc2.setWorld(block.getWorld());
+		}
 	}
 	
-	public void setPos2(int x, int y, int z) {
-		pos2.setX(x);
-		pos2.setY(y);
-		pos2.setZ(z);
+	public void setPos2(double x, double y, double z, World world) {
+		if(loc2 == null) {
+			loc2 = new Location(world, x, y, z);
+		}
+		else {
+			loc2.setX(x);
+			loc2.setY(y);
+			loc2.setZ(z);
+			loc2.setWorld(world);
+		}
 	}
 	
-	public Vector getPos1() {
-		return pos1;
+	public Location getPos1() {
+		return loc1;
 	}
 	
-	public Vector getPos2() {
-		return pos2;
+	public Location getPos2() {
+		return loc2;
 	}
 	
 	protected boolean isCompleteRegion() {
-		if(pos1 == null || pos2 == null) {
+		if(loc1 == null || loc2 == null || loc1.getWorld().equals(loc2.getWorld())) {
 			return false;
 		}
 		return true;
 	}
 	
 	public boolean isBlockContained(Location loc) {
-		if(isBetween(pos1.getBlockX(), pos2.getBlockX(), loc.getBlockX()) && 
-				isYBetween(pos1.getBlockY(), pos2.getBlockY(), loc.getBlockY()) && 
-				isBetween(pos1.getBlockZ(), pos2.getBlockZ(), loc.getBlockZ())) {
+		if(isBetween(loc1.getBlockX(), loc2.getBlockX(), loc.getBlockX()) && 
+				isYBetween(loc1.getBlockY(), loc2.getBlockY(), loc.getBlockY()) && 
+				isBetween(loc1.getBlockZ(), loc2.getBlockZ(), loc.getBlockZ()) &&
+				loc.getWorld().equals(loc1.getWorld()) && loc.getWorld().equals(loc2.getWorld())) {
 			return true;
 		}
 		
