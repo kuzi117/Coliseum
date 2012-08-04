@@ -117,8 +117,7 @@ public abstract class Arena {
 			}
 			editors.clear();
 		}
-		enabled = true;
-		return true;
+		return enabled = true;
 	}
 
 	public boolean disable() {
