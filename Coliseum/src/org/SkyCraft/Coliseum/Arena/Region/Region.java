@@ -70,7 +70,7 @@ public abstract class Region {
 	}
 	
 	protected boolean isCompleteRegion() {
-		if(loc1 == null || loc2 == null || loc1.getWorld().equals(loc2.getWorld())) {
+		if(loc1 == null || loc2 == null || !loc1.getWorld().equals(loc2.getWorld())) {
 			return false;
 		}
 		return true;
