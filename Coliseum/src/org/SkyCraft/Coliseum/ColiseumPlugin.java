@@ -13,40 +13,29 @@ public class ColiseumPlugin extends JavaPlugin {
 
 	private Logger log;
 	private Set<Arena> arenaSet = new HashSet<Arena>();
-	private Set<String> playerAlreadyJoined = new HashSet<String>();
 	private ConfigHandler confHandler;
+	//private SQLHandler sqlHandler;
 	private ColiseumCommandExecutor executor;
 	private PlayerListener pListener;
 	private BlockListener bListener;
 	
 	public void onEnable() {
-		pListener = new PlayerListener(this);
-		bListener = new BlockListener(this);
+        log = getLogger();
+        arenaSet = new HashSet<Arena>();
+        confHandler = new ConfigHandler(this, log);
+		//SQLHandler sqlHandler = new SQLHandler("user", "password");
 		getServer().getPluginManager().registerEvents(pListener, this);
 		getServer().getPluginManager().registerEvents(bListener, this);
-		
-		log = getLogger();
-		confHandler = new ConfigHandler(this, log);
-		getCommand("coliseum").setExecutor(executor = new ColiseumCommandExecutor(this, log, confHandler));
+		executor = new ColiseumCommandExecutor(this, log, confHandler);
+		getCommand("coliseum").setExecutor(executor);
+        pListener = new PlayerListener(this);
+        bListener = new BlockListener(this);
+        
 		confHandler.loadArenas();
 	}
 	
 	public Set<Arena> getArenaSet() {
 		return arenaSet;
-	}
-	
-	public boolean isPlayerJoined(String name) {
-		return playerAlreadyJoined.contains(name);
-	}
-	
-	public void joinPlayer(String name) {
-		playerAlreadyJoined.add(name);
-		return;
-	}
-	
-	public void leavePlayer(String name) {
-		playerAlreadyJoined.remove(name);
-		return;
 	}
 
 	public ConfigHandler getConfigHandler() {
