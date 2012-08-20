@@ -37,7 +37,6 @@ public class PVPArena extends Arena {
 
 	public void addCombatant(Player player) {
 		PVPCombatant combatant = new PVPCombatant(player);
-		plugin.joinPlayer(player.getName());
 		combatants.add(combatant);
 		combatant.toWaitingArea(waitingRegion);
 	}
@@ -45,7 +44,6 @@ public class PVPArena extends Arena {
 	public void removeCombatant(Player player) {
 		for(PVPCombatant combatant: combatants) {
 			if(combatant.getPlayer().equals(player)) {
-				plugin.leavePlayer(player.getName());
 				combatants.remove(combatant);
 				combatant.toOldLoc();
 				return;
@@ -54,7 +52,6 @@ public class PVPArena extends Arena {
 	}
 
 	public void removeCombatant(Combatant combatant) {
-		plugin.leavePlayer(combatant.getPlayer().getName());
 		combatant.getPlayer().getInventory().clear();
 		ItemStack air = new ItemStack(Material.AIR);//TODO REMOVE TEMP FIX
 		combatant.getPlayer().getInventory().setArmorContents(new ItemStack[] {air, air, air, air});//TODO REMOVE TEMP FIX
@@ -119,7 +116,7 @@ public class PVPArena extends Arena {
 		return started = true;
 	}
 
-	public boolean forceStart() {//TODO Should work.
+	public boolean forceStart() {
 		Set<PVPCombatant> remove = new HashSet<PVPCombatant>();
 		for(PVPCombatant c : combatants) {
 			if(!c.isReady()) {
