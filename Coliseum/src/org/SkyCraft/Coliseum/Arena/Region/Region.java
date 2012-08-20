@@ -9,8 +9,6 @@ public abstract class Region {
 	private Location loc1;
 	private Location loc2;
 	
-	//TODO implement checks to ensure no "flat" regions
-	
 	Region() {}
 	
 	public void setPos1(Block block) {
