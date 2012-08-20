@@ -185,7 +185,7 @@ public class ConfigHandler {
 				if(!a.enable()) {
 					sec.set("enabled", false);
 					if(sendStartupMessages) {
-						console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but was disabled.");
+						console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but had to be disabled.");
 					}
 					loaded++;
 				}
@@ -200,11 +200,12 @@ public class ConfigHandler {
 			else {
 				sec.set("enabled", false);
 				if(sendStartupMessages) {
-					console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but was disabled.");
+					console.sendMessage("[Coliseum] Loaded " + ChatColor.RED + a.getName() + ChatColor.GRAY + " successfully but remained disabled.");
 				}
 				loaded++;
 			}
 		}
+		saveArenas();
 		if(sendStartupMessages) {
 			console.sendMessage("[Coliseum] " + ChatColor.GREEN + String.valueOf(loaded) + "/" + arenaNames.size() + ChatColor.GRAY + " arenas were loaded.");
 			console.sendMessage("[Coliseum] " + ChatColor.GREEN + String.valueOf(enabled) + "/" + arenaNames.size() + ChatColor.GRAY + " arenas were enabled.");
